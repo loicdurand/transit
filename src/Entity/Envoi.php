@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EnvoiRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,6 +32,27 @@ class Envoi
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Objet $objet = null;
+
+    #[ORM\ManyToOne]
+    private ?TypeEnvoi $type = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $quantite = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StatutEnvoi $statut = null;
+
+    /**
+     * @var Collection<int, Action>
+     */
+    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'envoi', orphanRemoval: true)]
+    private Collection $actions;
+
+    public function __construct()
+    {
+        $this->actions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +115,72 @@ class Envoi
     public function setObjet(?Objet $objet): static
     {
         $this->objet = $objet;
+
+        return $this;
+    }
+
+    public function getType(): ?TypeEnvoi
+    {
+        return $this->type;
+    }
+
+    public function setType(?TypeEnvoi $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(?int $quantite): static
+    {
+        $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getStatut(): ?StatutEnvoi
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?StatutEnvoi $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Action>
+     */
+    public function getActions(): Collection
+    {
+        return $this->actions;
+    }
+
+    public function addAction(Action $action): static
+    {
+        if (!$this->actions->contains($action)) {
+            $this->actions->add($action);
+            $action->setEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAction(Action $action): static
+    {
+        if ($this->actions->removeElement($action)) {
+            // set the owning side to null (unless already changed)
+            if ($action->getEnvoi() === $this) {
+                $action->setEnvoi(null);
+            }
+        }
 
         return $this;
     }
