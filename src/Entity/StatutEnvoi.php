@@ -13,7 +13,7 @@ class StatutEnvoi
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 50)]
     private ?string $libelle = null;
 
     public function getId(): ?int

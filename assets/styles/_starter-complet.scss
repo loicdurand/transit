@@ -78,7 +78,11 @@ figure {
 }
 
 .w100 {
-	width: 100%;
+	width: 100% !important;
+}
+
+.margin-auto {
+	margin: auto !important;
 }
 
 /* effets d'ombrage */

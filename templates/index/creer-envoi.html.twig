@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil
+{% endblock %}
+
+{% block body %}
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">
+			Voir le fil d&#39;arianne
+		</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page">Créer un envoi</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	<main>
+
+		<h2>Créer un envoi</h2>
+
+		{{ form_start(form) }}
+
+		{{ form_label(form.titre) }}
+		{{ form_widget(form.titre) }}
+
+		{{ form_label(form.date) }}
+		{{ form_widget(form.date) }}
+
+		{{ form_label(form.destinataire) }}
+		{{ form_widget(form.destinataire) }}
+
+		{{ form_label(form.objet) }}
+		{{ form_widget(form.objet) }}
+
+		<button type="submit" class="fr-btn">Créer l'envoi</button>
+
+		{{ form_end(form) }}
+
+
+	</main>
+
+{% endblock %}
