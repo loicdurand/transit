@@ -43,9 +43,13 @@
 
 		<button type="submit" class="fr-btn">Créer l'envoi</button>
 
+		<button id="modal-creer-destinataire--trigger" aria-controls="modal-creer-destinataire" data-fr-opened="false" type="button" class="fr-btn fr-hidden">Ouvrir la modale</button>
+
 		{{ form_end(form) }}
 
 
 	</main>
+
+	{% include "components/modale_creer-destinataire.html.twig" %}
 
 {% endblock %}

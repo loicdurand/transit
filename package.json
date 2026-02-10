@@ -21,6 +21,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@bleckert/router": "^0.2.0",
         "@gouvfr/dsfr": "^1.14.3",
         "@symfony/stimulus-bridge": "^4.0.1",
         "@symfony/ux-turbo": "^2.32.0",

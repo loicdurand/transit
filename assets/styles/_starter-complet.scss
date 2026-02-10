@@ -77,12 +77,20 @@ figure {
 	position: relative;
 }
 
+.absolute {
+	position: absolute;
+}
+
 .w100 {
 	width: 100% !important;
 }
 
 .margin-auto {
 	margin: auto !important;
+}
+
+.inline {
+	display: inline !important;
 }
 
 /* effets d'ombrage */

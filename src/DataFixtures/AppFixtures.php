@@ -61,7 +61,8 @@ class AppFixtures extends Fixture
 
         $destinataires = [
             'SCRTA',
-            'SAINT-MARTIN'
+            'SAINT-MARTIN',
+            'Autre'
         ];
 
         foreach ($destinataires as $destinataire) {

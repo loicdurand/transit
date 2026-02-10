@@ -10,10 +10,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Controller\TransitController;
+use App\Entity\Destinataire;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
 use App\Form\EnvoiType;
+use App\Form\DestinataireType;
 
 final class IndexController extends TransitController
 {
@@ -40,7 +42,7 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => 'Initial']);
+        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => 'Initial'], ['id' => 'DESC']);
         $envoi = new Envoi();
         $envoi->setDate(new \Datetime('now'));
         $envoi->setStatut($statut_initial);
@@ -58,7 +60,31 @@ final class IndexController extends TransitController
 
         return $this->render('index/creer-envoi.html.twig', [
             'user' => $user,
-            'form' => $form
+            'form' => $form,
+            'destinataire_form' => $this->createForm(DestinataireType::class)
+        ]);
+    }
+
+    #[Route('/creer-destinataire', name: 'transit_index_creerdestinataire', methods: ['POST'])]
+    public function creerdestinataire(EntityManagerInterface $entityManager)
+    {
+        $success = false;
+        $data = (array) json_decode($this->request->getContent());
+        $libelle = $data['libelle'];
+
+        $exists = $entityManager->getRepository(Destinataire::class)->findOneBy(['libelle' => $libelle]);
+        if (is_null($exists)) {
+            $destinataire = new Destinataire();
+            $destinataire->setLibelle($libelle);
+            $entityManager->persist($destinataire);
+            $entityManager->flush();
+            $exists = $entityManager->getRepository(Destinataire::class)->findOneBy(['libelle' => $libelle]);
+            $success = true;
+        }
+
+        return $this->json([
+            'success' => $success,
+            'data' => $exists
         ]);
     }
 }
