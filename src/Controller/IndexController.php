@@ -11,11 +11,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Controller\TransitController;
 use App\Entity\Destinataire;
+use App\Entity\Objet;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
 use App\Form\EnvoiType;
 use App\Form\DestinataireType;
+use App\Form\ObjetType;
 
 final class IndexController extends TransitController
 {
@@ -42,7 +44,7 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => 'Initial'], ['id' => 'DESC']);
+        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => 'Initial']);
         $envoi = new Envoi();
         $envoi->setDate(new \Datetime('now'));
         $envoi->setStatut($statut_initial);
@@ -61,7 +63,8 @@ final class IndexController extends TransitController
         return $this->render('index/creer-envoi.html.twig', [
             'user' => $user,
             'form' => $form,
-            'destinataire_form' => $this->createForm(DestinataireType::class)
+            'destinataire_form' => $this->createForm(DestinataireType::class),
+            'objet_form' => $this->createForm(ObjetType::class)
         ]);
     }
 
@@ -79,6 +82,29 @@ final class IndexController extends TransitController
             $entityManager->persist($destinataire);
             $entityManager->flush();
             $exists = $entityManager->getRepository(Destinataire::class)->findOneBy(['libelle' => $libelle]);
+            $success = true;
+        }
+
+        return $this->json([
+            'success' => $success,
+            'data' => $exists
+        ]);
+    }
+
+    #[Route('/creer-objet', name: 'transit_index_creerobjet', methods: ['POST'])]
+    public function creerobjet(EntityManagerInterface $entityManager)
+    {
+        $success = false;
+        $data = (array) json_decode($this->request->getContent());
+        $libelle = $data['libelle'];
+
+        $exists = $entityManager->getRepository(Objet::class)->findOneBy(['libelle' => $libelle]);
+        if (is_null($exists)) {
+            $objet = new Objet();
+            $objet->setLibelle($libelle);
+            $entityManager->persist($objet);
+            $entityManager->flush();
+            $exists = $entityManager->getRepository(Objet::class)->findOneBy(['libelle' => $libelle]);
             $success = true;
         }
 

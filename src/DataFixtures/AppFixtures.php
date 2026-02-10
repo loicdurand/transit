@@ -60,9 +60,9 @@ class AppFixtures extends Fixture
         // INSERTION DES DESTINATAIRES (SCRTA, SXM, ETC...)
 
         $destinataires = [
+            'Autre',
             'SCRTA',
-            'SAINT-MARTIN',
-            'Autre'
+            'SAINT-MARTIN'
         ];
 
         foreach ($destinataires as $destinataire) {
@@ -75,9 +75,9 @@ class AppFixtures extends Fixture
         // INSERTION DES OBJETS (Envoi MCO, Barge SXM, ETC...)
 
         $objets = [
+            'Autre',
             'Envoi MCO',
-            'Barge SXM',
-            'Autre'
+            'Barge SXM'
         ];
 
         foreach ($objets as $objet) {
