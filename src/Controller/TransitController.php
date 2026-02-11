@@ -11,6 +11,7 @@ class TransitController extends AbstractController
 {
 
     public $request;
+    public $statut_initial_libelle = 'Initial';
 
     public function __construct()
     {

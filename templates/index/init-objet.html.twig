@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configuration des étapes
+{% endblock %}
+
+{% block body %}
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">Voir le fil d&#39;arianne</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page">Configuration des étapes</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	<main class="fr-mt-4w">
+
+		<h2>Configuration des étapes pour "{{ objet.libelle }}"</h2>
+
+		<p>
+			Vous avez saisi l'objet&nbsp;"<span class="bold">{{ objet.libelle }}</span>":
+			<br>
+			Cet objet n'a pas encore été configuré. Nous allons donc le paramétrer...
+		</p>
+
+		<p>
+			Dans les champs ci-dessous, saisissez une action à réaliser lorsque cet objet ({{ objet.libelle }}) est choisi.
+			<br>
+			En face, indiquer le statut de l'envoi tant que cette action n'est pas accomplie, puis cliquez sur "Ajouter".
+			<br>
+			Une liste d'actions va ainsi être créée. Vous pourrez-alors réagencer l'ordre des actions par glisser-déposer, modifier les actions et statuts en cliquant dessus, ou supprimer une action avec le bouton "Suppr.".
+		</p>
+
+		{# Le code ci-dessous a été généré avec Gemini, et adapté à ce projet #}
+
+		<div class="todo-container fr-grid-row fr-grid-row--gutters fr-mb-4w">
+
+			<div class="fr-input-group fr-col-5">
+				<label class="fr-label" for="taskInput">
+					Action à réaliser
+				</label>
+				<input class="fr-input" aria-describedby="taskInput-messages" id="taskInput" type="text" placeholder="Avez-vous saisi les documents?">
+				<div class="fr-messages-group" id="taskInput-messages" aria-live="polite"></div>
+			</div>
+
+			<div class="fr-input-group fr-col-5">
+				<label class="fr-label" for="statusInput">
+					Statut si non réalisé
+				</label>
+				<input class="fr-input" list="statusSuggestions" aria-describedby="statusInput-messages" id="statusInput" type="text">
+				<div class="fr-messages-group" id="statusInput-messages" placeholder="Doc à finaliser..." aria-live="polite"></div>
+				<datalist id="statusSuggestions">
+					{% for statut in statuts %}
+						<option value="{{ statut.libelle }}"></option>
+					{% endfor %}
+				</datalist>
+			</div>
+
+			<div class="fr-input-group fr-col-2">
+				<button id="add-task-button" class="fr-mt-4w fr-btn fr-btn--tertiary fr-icon-add-line fr-btn--icon-left">Ajouter</button>
+			</div>
+
+			<h3 class="fr-h6 fr-col-5 fr-col-offset-1 inline center">Action à réaliser</h3>
+			<h3 class="fr-h6 fr-col-4 inline center">Statut si non réalisé</h3>
+			<h3 class="fr-h6 fr-col-1 inline center">Action</h3>
+
+			<ul id="todoList" class="todo-list fr-container"></ul>
+
+			<button id="sauver-objet-button" type="button" disabled class="fr-btn fr-mt-2w">Enregistrer cette configuration</button>
+
+		</div>
+
+	</main>
+
+{% endblock %}

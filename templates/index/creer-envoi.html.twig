@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil
+{% block title %}Créer un envoi
 {% endblock %}
 
 {% block body %}
@@ -41,7 +41,7 @@
 		{{ form_label(form.objet) }}
 		{{ form_widget(form.objet) }}
 
-		<button type="submit" class="fr-btn fr-mt-2w">Créer l'envoi</button>
+		<button type="submit" class="fr-btn fr-mt-4w">Étape suivante</button>
 
 		<button id="modal-creer-destinataire--trigger" aria-controls="modal-creer-destinataire" data-fr-opened="false" type="button" class="fr-btn fr-hidden">Ouvrir la modale</button>
 		<button id="modal-creer-objet--trigger" aria-controls="modal-creer-objet" data-fr-opened="false" type="button" class="fr-btn fr-hidden">Ouvrir la modale</button>

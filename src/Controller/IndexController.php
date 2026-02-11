@@ -2,16 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Controller\TransitController;
 use App\Entity\Destinataire;
 use App\Entity\Objet;
+use App\Entity\Action;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
@@ -44,7 +42,7 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => 'Initial']);
+        $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $this->statut_initial_libelle]);
         $envoi = new Envoi();
         $envoi->setDate(new \Datetime('now'));
         $envoi->setStatut($statut_initial);
@@ -57,6 +55,16 @@ final class IndexController extends TransitController
             $entityManager->persist($envoi);
             $entityManager->flush();
 
+            $objet = $envoi->getObjet();
+            // On cherche dans la table Action si une action existe déjà pour cet objet.
+            // Celà signifierai que l'Objet a déjà été configuré, et que l'on peut s'en servir de modèle pour cet envoi.
+            $exists = $entityManager->getRepository(Action::class)->findOneBy(['objet' => $objet]);
+            if (is_null($exists)) {
+                return $this->redirectToRoute('transit_index_initobjet', [
+                    'id' => $objet->getId()
+                ]);
+            }
+
             return $this->redirectToRoute('transit_index', []);
         }
 
@@ -68,8 +76,29 @@ final class IndexController extends TransitController
         ]);
     }
 
-    #[Route('/creer-destinataire', name: 'transit_index_creerdestinataire', methods: ['POST'])]
-    public function creerdestinataire(EntityManagerInterface $entityManager)
+    #[Route('/init-objet', name: 'transit_index_initobjet')]
+    public function initobjet(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager): Response
+    {
+
+        $id = $this->request->query->get('id');
+        if (is_null($user))
+            return $this->redirectToRoute('transit_login');
+
+        $objet = $entityManager->getRepository(Objet::class)->find($id);
+
+        $statuts = $entityManager->getRepository(StatutEnvoi::class)->findAll();
+        $statuts = array_filter($statuts, function ($statut) {
+            return $statut->getLibelle() !== $this->statut_initial_libelle;
+        });
+
+        return $this->render('index/init-objet.html.twig', [
+            'objet' => $objet,
+            'statuts' => $statuts
+        ]);
+    }
+
+    #[Route('/sauver-destinataire', name: 'transit_index_sauverdestinataire', methods: ['POST'])]
+    public function sauverdestinataire(EntityManagerInterface $entityManager)
     {
         $success = false;
         $data = (array) json_decode($this->request->getContent());
@@ -91,8 +120,8 @@ final class IndexController extends TransitController
         ]);
     }
 
-    #[Route('/creer-objet', name: 'transit_index_creerobjet', methods: ['POST'])]
-    public function creerobjet(EntityManagerInterface $entityManager)
+    #[Route('/sauver-objet', name: 'transit_index_sauverobjet', methods: ['POST'])]
+    public function sauverobjet(EntityManagerInterface $entityManager)
     {
         $success = false;
         $data = (array) json_decode($this->request->getContent());

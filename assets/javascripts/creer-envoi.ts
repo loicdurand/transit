@@ -76,7 +76,7 @@ modale_destinataire_submit?.addEventListener('click', (event) => {
         return false;
 
     modale_destinataire_loader.classList.remove('fr-hidden');
-    axios.post(`/${prefix}/creer-destinataire`, { libelle })
+    axios.post(`/${prefix}/sauver-destinataire`, { libelle })
         .then((response) => {
             const { success, data } = response.data;
             modale_destinataire_loader.classList.add('fr-hidden');
@@ -175,7 +175,7 @@ modale_objet_submit?.addEventListener('click', (event) => {
         return false;
 
     modale_objet_loader.classList.remove('fr-hidden');
-    axios.post(`/${prefix}/creer-objet`, { libelle })
+    axios.post(`/${prefix}/sauver-objet`, { libelle })
         .then((response) => {
             const { success, data } = response.data;
             modale_objet_loader.classList.add('fr-hidden');

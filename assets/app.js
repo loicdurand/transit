@@ -12,9 +12,12 @@ const prefix = '/transit';
 
 const router = new Router(prefix);
 
-router.on('/creer-envoi', (route, path, event) => {
-    console.log({ route, path, event });
-    import('./javascripts/creer-envoi.ts')
+router.on('/creer-envoi', () => {
+    import('./javascripts/creer-envoi.ts');
+});
+
+router.on('/init-objet', () => {
+    import('./javascripts/init-objet.ts');
 });
 
 router.dispatch();
