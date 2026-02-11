@@ -211,5 +211,3 @@ function ouvrir_modale_objet() {
 function fermer_modale_objet() {
     modale_objet_trigger?.setAttribute('data-fr-opened', 'false');
 }
-
-
