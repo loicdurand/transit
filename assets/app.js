@@ -14,16 +14,16 @@ const router = new Router(prefix);
 
 router.on('/creer-envoi', () => {
     import('./javascripts/creer-envoi.ts');
+    console.log('creer-envoi.ts');
 });
 
 router.on('/init-objet', () => {
     import('./javascripts/init-objet.ts');
+    console.log('init-objet.ts');
 });
 
 router.dispatch();
 
-document.addEventListener('click', (event) => {
-    if (event.target instanceof HTMLAnchorElement) {
-        location.href = event.target.href;
-    }
-})
+document.addEventListener('turbo:load', () => {
+    router.dispatch();
+});

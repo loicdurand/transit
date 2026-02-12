@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configuration des étapes
+{% endblock %}
+
+{% block body %}
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">Voir le fil d&#39;arianne</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page">Configuration des étapes</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	<main class="fr-mt-4w">
+
+		<h2>Aperçu des étapes pour "{{ envoi.objet.libelle }}"</h2>
+
+		<p>
+			Vous avez saisi l'objet&nbsp;"<span class="bold">{{ envoi.objet.libelle }}</span>":
+		</p>
+
+		<p>
+			Voici le récapitulatif des étapes qui ont été définies pour cet objet.
+		</p>
+
+		{# Le code ci-dessous a été généré avec Gemini, et adapté à ce projet #}
+
+		<div class="todo-container fr-grid-row fr-grid-row--gutters fr-mb-4w">
+
+			<h3 class="fr-h6 fr-col-1 inline center">N°</h3>
+			<h3 class="fr-h6 fr-col-7 inline center">Action à réaliser</h3>
+			<h3 class="fr-h6 fr-col-4 inline center">Statut si non réalisé</h3>
+
+			<ul id="todoList" class="todo-list fr-container">
+				{% for action in envoi.actions %}
+					<li id="{{ 'task-' ~ ('now'|date('U')) }}" class="todo-item fr-grid-row fr-grid-row--gutters">
+						<span class="edit-text fr-col-1 center">{{ 1 + action.rang }}</span>
+						<span class="edit-text fr-col-7 center">{{ action.etape.libelle }}</span>
+						<span class="edit-status fr-col-4 center">{{ action.etape.statutSiNegatif.libelle }}</span>
+					</li>
+				{% endfor %}
+			</ul>
+
+			<ul class="fr-btns-group fr-btns-group--inline">
+				<li>
+					<a href="{{ path('transit_index') }}" class="fr-btn fr-mt-2w">
+						C'est parti!
+					</a>
+				</li>
+				<li>
+					<a href="{{ path('transit_index_initobjet',{envoi: envoi.id}) }}" class="fr-btn fr-btn--secondary fr-mt-2w">
+						Modifier les étapes pour cet envoi
+					</a>
+				</li>
+			</ul>
+
+		</div>
+
+	</main>
+
+{% endblock %}

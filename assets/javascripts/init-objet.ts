@@ -7,6 +7,7 @@ interface Task {
     text: string;
     status: string;
 }
+
 const // 
     prefix = 'transit',
     addTaskButton = document.getElementById('add-task-button') as HTMLButtonElement,
@@ -24,7 +25,8 @@ document.addEventListener('click', (event) => {
 sauverObjetButton.addEventListener('click', () => {
     sauverObjetButton_loader.classList.remove('fr-hidden');
     const // 
-        objet_id = sauverObjetButton.dataset.id,
+        envoi_id = sauverObjetButton.dataset.envoi,
+        objet_id = sauverObjetButton.dataset.objet,
         items = saveOrder(),
         etapes = items.map((item, i) => {
             return {
@@ -34,14 +36,25 @@ sauverObjetButton.addEventListener('click', () => {
             }
         });
 
-    axios.post(`/${prefix}/sauver-actions`, { objet_id, etapes })
+    console.log(etapes);
 
-    // @TODO: finir envoi AJAX
+    axios.post(`/${prefix}/sauver-actions`, { envoi_id, objet_id, etapes })
+        .then((response) => {
+            const { success } = response.data;
+            sauverObjetButton_loader.classList.add('fr-hidden');
+            if (success) {
+                location.href = `/${prefix}/recap-envoi?envoi=${envoi_id}`;
+            }
+        });
 
 });
 
 const todoList = document.getElementById('todoList') as HTMLUListElement;
 let draggedItem: HTMLElement | null = null;
+
+if (todoList.children.length) {
+    [...todoList.children].forEach(li => addDragEvents(li as HTMLElement));
+}
 
 function addTask(): void {
     const taskInput = document.getElementById('taskInput') as HTMLInputElement;
@@ -100,6 +113,7 @@ function addDragEvents(item: HTMLElement): void {
             todoList.insertBefore(draggedItem!, afterElement);
         }
     });
+
 }
 
 function getDragAfterElement(container: HTMLElement, y: number): HTMLElement | null {

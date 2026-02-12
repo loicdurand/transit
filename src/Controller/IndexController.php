@@ -62,7 +62,8 @@ final class IndexController extends TransitController
             $exists = $entityManager->getRepository(Action::class)->findOneBy(['objet' => $objet]);
             if (is_null($exists)) {
                 return $this->redirectToRoute('transit_index_initobjet', [
-                    'id' => $objet->getId()
+                    'envoi' => $envoi->getId(),
+                    'objet' => $objet->getId()
                 ]);
             }
 
@@ -81,11 +82,15 @@ final class IndexController extends TransitController
     public function initobjet(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager): Response
     {
 
-        $id = $this->request->query->get('id');
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $objet = $entityManager->getRepository(Objet::class)->find($id);
+        $envoi_id = $this->request->query->get('envoi');
+        $objet_id = $this->request->query->get('objet');
+
+        $envoi = is_null($envoi_id) ? null : $entityManager->getRepository(Envoi::class)->find($envoi_id);
+        $objet = is_null($objet_id) ? $envoi->getObjet() : $entityManager->getRepository(Objet::class)->find($objet_id);
+
 
         $statuts = $entityManager->getRepository(StatutEnvoi::class)->findAll();
         $statuts = array_filter($statuts, function ($statut) {
@@ -93,8 +98,44 @@ final class IndexController extends TransitController
         });
 
         return $this->render('index/init-objet.html.twig', [
+            'envoi' => $envoi,
             'objet' => $objet,
             'statuts' => $statuts
+        ]);
+    }
+
+    #[Route('/recap-envoi', name: 'transit_index_recapenvoi')]
+    public function recapenvoi(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager): Response
+    {
+
+        if (is_null($user))
+            return $this->redirectToRoute('transit_login');
+
+        $envoi_id = $this->request->query->get('envoi');
+
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+
+        if ($envoi->getActions()->count() === 0) {
+            // on clône les actions de l'objet pour l'envoi
+            $objet = $envoi->getObjet();
+            $prev_actions = $entityManager->getRepository(Action::class)->findBy([
+                'objet' => $objet->getId()
+            ]);
+            foreach ($prev_actions as $action) {
+                $clone = new Action();
+                $clone->setRang($action->getRang());
+                $clone->setResultat(false);
+                $clone->setEtape($action->getEtape());
+                $clone->setEnvoi($envoi);
+                $entityManager->persist($clone);
+                $entityManager->flush();
+                // On "recharge" l'envoi pour avoir les actions fraîchement insérées
+                $envoi->addAction($clone);
+            }
+        }
+
+        return $this->render('index/recap-envoi.html.twig', [
+            'envoi' => $envoi
         ]);
     }
 
@@ -147,18 +188,34 @@ final class IndexController extends TransitController
     #[Route('/sauver-actions', name: 'transit_index_sauveractions', methods: ['POST'])]
     public function sauveractions(EntityManagerInterface $entityManager)
     {
-        $success = false;
         $data = (array) json_decode($this->request->getContent());
-        // {
-        //         objet_id,
-        //         rang: i,
-        //         libelle: item.text,
-        //         statut: item.status
-        //     }
+
+        $envoi_id = $data['envoi_id'];
         $objet_id = $data['objet_id'];
         $etapes = $data['etapes'];
 
-        $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+
+        $envoi_ou_objet = 'objet';
+
+        // Si on a des actions déjà existantes pour cet objet, ça signifie que l'Objet a déjà été configuré.
+        // On ne s'intéressera qu'à l'Envoi
+        $prev_actions = $entityManager->getRepository(Action::class)->findBy([
+            'objet' => $objet_id
+        ]);
+
+        if (count($prev_actions) > 0) {
+            $envoi_ou_objet = 'envoi';
+            $prev_actions = $entityManager->getRepository(Action::class)->findBy([
+                'envoi' => $envoi_id
+            ]);
+        }
+
+        foreach ($prev_actions as $action) {
+            $entityManager->remove($action);
+            $entityManager->flush();
+            $envoi->removeAction($action);
+        }
 
         foreach ($etapes as $etape) {
             $statut_libelle = $etape->statut;
@@ -185,29 +242,23 @@ final class IndexController extends TransitController
             }
             $rang = $etape->rang;
 
-            $action_exists = $entityManager->getRepository(Action::class)->findOneBy([
-                'objet' => $objet_id,
-                'rang' => $rang
-            ]);
-
-            if (is_null($action_exists)) {
-                $action = new Action();
-                $action->setRang($rang);
-                $action->setResultat(false);
-                $action->setEtape($etape_exists);
+            $action = new Action();
+            $action->setRang($rang);
+            $action->setResultat(false);
+            $action->setEtape($etape_exists);
+            if ($envoi_ou_objet === 'objet') {
+                $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
                 $action->setObjet($objet);
-                $entityManager->persist($action);
-                $entityManager->flush();
-                $action_exists = $entityManager->getRepository(Action::class)->findOneBy([
-                    'objet' => $objet_id,
-                    'rang' => $rang
-                ]);
+            } else {
+                $action->setEnvoi($envoi);
             }
+            $entityManager->persist($action);
+            $entityManager->flush();
         }
 
         $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
         return $this->json([
-            'success' => $success,
+            'success' => $objet->getActions()->count() > 0,
             'data' => $objet
         ]);
     }
