@@ -24,7 +24,6 @@ class Action
     private ?bool $resultat = null;
 
     #[ORM\ManyToOne(inversedBy: 'actions')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Envoi $envoi = null;
 
     #[ORM\ManyToOne(inversedBy: 'actions')]
@@ -71,10 +70,10 @@ class Action
         return $this;
     }
 
-    public function getEnvoi(): ?Envoi
-    {
-        return $this->envoi;
-    }
+    // public function getEnvoi(): ?Envoi
+    // {
+    //     return $this->envoi;
+    // }
 
     public function setEnvoi(?Envoi $envoi): static
     {
@@ -83,10 +82,10 @@ class Action
         return $this;
     }
 
-    public function getObjet(): ?Objet
-    {
-        return $this->objet;
-    }
+    // public function getObjet(): ?Objet
+    // {
+    //     return $this->objet;
+    // }
 
     public function setObjet(?Objet $objet): static
     {

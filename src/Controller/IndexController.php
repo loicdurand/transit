@@ -13,6 +13,7 @@ use App\Entity\Action;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
+use App\Entity\Etape;
 use App\Form\EnvoiType;
 use App\Form\DestinataireType;
 use App\Form\ObjetType;
@@ -140,6 +141,74 @@ final class IndexController extends TransitController
         return $this->json([
             'success' => $success,
             'data' => $exists
+        ]);
+    }
+
+    #[Route('/sauver-actions', name: 'transit_index_sauveractions', methods: ['POST'])]
+    public function sauveractions(EntityManagerInterface $entityManager)
+    {
+        $success = false;
+        $data = (array) json_decode($this->request->getContent());
+        // {
+        //         objet_id,
+        //         rang: i,
+        //         libelle: item.text,
+        //         statut: item.status
+        //     }
+        $objet_id = $data['objet_id'];
+        $etapes = $data['etapes'];
+
+        $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
+
+        foreach ($etapes as $etape) {
+            $statut_libelle = $etape->statut;
+            $statut_exists = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $statut_libelle]);
+            if (is_null($statut_exists)) {
+                $statut = new StatutEnvoi();
+                $statut->setLibelle($statut_libelle);
+                $entityManager->persist($statut);
+                $entityManager->flush();
+                $statut_exists = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $statut_libelle]);
+            }
+            $etape_libelle = $etape->libelle;
+            $etape_exists = $entityManager->getRepository(Etape::class)->findOneBy(['libelle' => $etape_libelle]);
+            if (is_null($etape_exists)) {
+                $new_etape = new Etape();
+                $new_etape->setLibelle($etape_libelle);
+                $new_etape->setStatutSiNegatif($statut_exists);
+                $entityManager->persist($new_etape);
+                $entityManager->flush();
+                $etape_exists = $entityManager->getRepository(Etape::class)->findOneBy([
+                    'libelle' => $etape_libelle,
+                    'statut_si_negatif' => $statut_exists->getId()
+                ]);
+            }
+            $rang = $etape->rang;
+
+            $action_exists = $entityManager->getRepository(Action::class)->findOneBy([
+                'objet' => $objet_id,
+                'rang' => $rang
+            ]);
+
+            if (is_null($action_exists)) {
+                $action = new Action();
+                $action->setRang($rang);
+                $action->setResultat(false);
+                $action->setEtape($etape_exists);
+                $action->setObjet($objet);
+                $entityManager->persist($action);
+                $entityManager->flush();
+                $action_exists = $entityManager->getRepository(Action::class)->findOneBy([
+                    'objet' => $objet_id,
+                    'rang' => $rang
+                ]);
+            }
+        }
+
+        $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
+        return $this->json([
+            'success' => $success,
+            'data' => $objet
         ]);
     }
 }

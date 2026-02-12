@@ -1,21 +1,44 @@
 import '../styles/init-objet.scss';
 
+import axios from 'axios';
+
 interface Task {
     id: string;
     text: string;
     status: string;
 }
+const // 
+    prefix = 'transit',
+    addTaskButton = document.getElementById('add-task-button') as HTMLButtonElement,
+    sauverObjetButton = document.getElementById('sauver-objet-button') as HTMLButtonElement,
+    sauverObjetButton_loader = document.getElementById('sauver-objet-button--loader') as HTMLDivElement;
 
-const addTaskButton = document.getElementById('add-task-button') as HTMLButtonElement;
 addTaskButton.addEventListener('click', addTask);
-
-const sauverObjetButton = document.getElementById('sauver-objet-button') as HTMLButtonElement;
 
 document.addEventListener('click', (event) => {
     if ((event.target as HTMLElement).classList.contains('delete-btn')) {
         deleteTask(event.target as HTMLButtonElement);
     }
-})
+});
+
+sauverObjetButton.addEventListener('click', () => {
+    sauverObjetButton_loader.classList.remove('fr-hidden');
+    const // 
+        objet_id = sauverObjetButton.dataset.id,
+        items = saveOrder(),
+        etapes = items.map((item, i) => {
+            return {
+                rang: i,
+                libelle: item.text,
+                statut: item.status
+            }
+        });
+
+    axios.post(`/${prefix}/sauver-actions`, { objet_id, etapes })
+
+    // @TODO: finir envoi AJAX
+
+});
 
 const todoList = document.getElementById('todoList') as HTMLUListElement;
 let draggedItem: HTMLElement | null = null;
@@ -93,7 +116,7 @@ function getDragAfterElement(container: HTMLElement, y: number): HTMLElement | n
     }, { offset: Number.NEGATIVE_INFINITY } as { offset: number; element: HTMLElement | null }).element;
 }
 
-function saveOrder(): void {
+function saveOrder(): Task[] {
     const items = [...todoList.querySelectorAll('.todo-item')].map(item => ({
         id: item.id,
         text: (item.querySelector('.edit-text') as HTMLInputElement).value,
@@ -104,4 +127,5 @@ function saveOrder(): void {
         sauverObjetButton.disabled = true;
     }
     console.log("Nouvel ordre :", items);
+    return items;
 }
