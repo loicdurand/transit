@@ -22,6 +22,11 @@ router.on('/init-objet', () => {
     console.log('init-objet.ts');
 });
 
+router.on('/envoi', () => {
+    import('./javascripts/envoi.ts');
+    console.log('envoi.ts');
+});
+
 router.dispatch();
 
 document.addEventListener('turbo:load', () => {

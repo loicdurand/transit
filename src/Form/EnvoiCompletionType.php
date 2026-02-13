@@ -18,9 +18,13 @@ class EnvoiCompletionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre')
-            ->add('reference')
-            ->add('date')
+            // ->add('titre')
+            ->add('reference', null, [
+                'attr' => [
+                    'placeholder' => 'Réforme N°X/20XX'
+                ]
+            ])
+            // ->add('date')
             ->add('type', EntityType::class, [
                 'class' => TypeEnvoi::class,
                 'choice_label' => 'libelle',
@@ -33,19 +37,19 @@ class EnvoiCompletionType extends AbstractType
                     'value' => 1
                 ]
             ])
-            ->add('destinataire', EntityType::class, [
-                'class' => Destinataire::class,
-                'choice_label' => 'libelle',
-            ])
-            ->add('objet', EntityType::class, [
-                'class' => Objet::class,
-                'choice_label' => 'libelle',
-            ])
+            // ->add('destinataire', EntityType::class, [
+            //     'class' => Destinataire::class,
+            //     'choice_label' => 'libelle',
+            // ])
+            // ->add('objet', EntityType::class, [
+            //     'class' => Objet::class,
+            //     'choice_label' => 'libelle',
+            // ])
 
-            ->add('statut', EntityType::class, [
-                'class' => StatutEnvoi::class,
-                'choice_label' => 'libelle',
-            ])
+            // ->add('statut', EntityType::class, [
+            //     'class' => StatutEnvoi::class,
+            //     'choice_label' => 'libelle',
+            // ])
         ;
     }
 

@@ -23,16 +23,56 @@
 
 	<main class="fr-mt-4w">
 
-		<h2>Envoi</h2>
+		<p class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
-		<h3 class="underline">Envoi:</h3>
+		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
 
+		<p>
+			Objet:
+			{{ envoi.objet.libelle }}
+			<br>
+			Destinataire:
+			{{ envoi.destinataire.libelle }}
+			<br>
+			En date du
+			{{ envoi.date|date('d/m/Y')}}.
+		</p>
 
 		{{ form_start(form)}}
 
+		<div class="fr-grid-row fr-grid-row--gutters">
+
+			<h3 class="underline fr-col-5">
+				{{ form_label(form.reference) }}
+				{{ form_widget(form.reference) }}
+			</h3>
+
+			<div class="fr-col-5">
+				{{ form_label(form.type) }}
+				{{ form_widget(form.type) }}
+			</div>
+			<div class="fr-col-2">
+				{{ form_label(form.quantite) }}
+				{{ form_widget(form.quantite) }}
+			</div>
+
+		</div>
+
 		{{ form_end(form)}}
 
+		<h4>Liste de tâches</h4>
 
-	</main>
+		<p>
 
-{% endblock %}
+			Pour modifier la liste de taches ci-dessous,
+			<a href="{{ path('transit_index_initobjet',{envoi: envoi.id}) }}">cliquez ici</a>.
+
+			<ul id="task-list" class="task-list">
+				{% for action in envoi.actions %}
+					<li {% if action.resultat %} class="checked" {% endif %}>{{ action.etape.libelle }}</li>
+				{% endfor %}
+			</ul>
+
+		</p>
+	</p>
+</main>{% endblock %}

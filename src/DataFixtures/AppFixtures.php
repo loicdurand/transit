@@ -21,11 +21,11 @@ class AppFixtures extends Fixture
 
         $types_envoi = [
             [
-                'libelle' => 'palette',
+                'libelle' => 'Palette',
                 'max' => null
             ],
             [
-                'libelle' => 'colis',
+                'libelle' => 'Colis',
                 'max' => 5
             ]
         ];
@@ -107,7 +107,7 @@ class AppFixtures extends Fixture
                 'En attente réception FR302'
             ],
             [
-                'Avez-vous renseigné le n° FR302 sur la listed e chargement?',
+                'Avez-vous renseigné le n° FR302 sur la liste de chargement?',
                 'Renseigner n° FR302 sur liste de chargement'
             ],
             [
