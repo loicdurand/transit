@@ -20,7 +20,7 @@ class Action
     #[ORM\JoinColumn(nullable: false)]
     private ?Etape $etape = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $resultat = null;
 
     #[ORM\ManyToOne(inversedBy: 'actions')]
@@ -63,7 +63,7 @@ class Action
         return $this->resultat;
     }
 
-    public function setResultat(bool $resultat): static
+    public function setResultat(?bool $resultat): static
     {
         $this->resultat = $resultat;
 

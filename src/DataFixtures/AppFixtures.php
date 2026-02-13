@@ -7,6 +7,8 @@ use Doctrine\Persistence\ObjectManager;
 
 use App\Entity\TypeEnvoi;
 use App\Entity\StatutEnvoi;
+use App\Entity\Etape;
+use App\Entity\Action;
 use App\Entity\Destinataire;
 use App\Entity\Objet;
 
@@ -36,27 +38,6 @@ class AppFixtures extends Fixture
             $manager->flush();
         }
 
-        // INSERTION DES STAUTS D'ENVOI, POUR SUIVRE LES ÉTAPES
-
-        $statuts = [
-            'Initial',
-            'Doc à finaliser',
-            'Envoi à créer sur SCRTASIC',
-            'Doc à envoyer au SCRTA',
-            'Envoyer liste de chargement à STT',
-            'En attente réception FR302',
-            'Renseigner n° FR302 sur liste de chargement',
-            'Envoyer le FR302 + LC au SCRTA',
-            'Finalisé'
-        ];
-
-        foreach ($statuts as $libelle) {
-            $entity = new StatutEnvoi();
-            $entity->setLibelle($libelle);
-            $manager->persist($entity);
-            $manager->flush();
-        }
-
         // INSERTION DES DESTINATAIRES (SCRTA, SXM, ETC...)
 
         $destinataires = [
@@ -74,17 +55,87 @@ class AppFixtures extends Fixture
 
         // INSERTION DES OBJETS (Envoi MCO, Barge SXM, ETC...)
 
+        $envoi_MCO = new Objet();
+
         $objets = [
             'Autre',
             'Envoi MCO',
             'Barge SXM'
         ];
 
-        foreach ($objets as $objet) {
+        foreach ($objets as $objet_libelle) {
             $entity = new Objet();
-            $entity->setLibelle($objet);
+            $entity->setLibelle($objet_libelle);
             $manager->persist($entity);
             $manager->flush();
+            if ($objet_libelle === 'Envoi MCO') {
+                $envoi_MCO = $entity;
+            }
+        }
+
+        // INSERTION DES STATUTS, ÉTAPES ET ACTIONS
+
+        $etapes_pour_ENVOI_MCO = [
+            [
+                'Avez-vous saisi les documents?',
+                'Initial'
+            ],
+            [
+                'Avez-vous créé un nouvel envoi sur SCRTASIC?',
+                'Doc à finaliser'
+            ],
+            // @TODO: "Renseigner n° fiche de transport" + input
+            [
+                'La liste de chargement a-t\'elle été envoyée au SCRTA pour validation?',
+                'Envoi à créer sur SCRTASIC'
+            ],
+            [
+                'La liste de chargement a-t\'elle été envoyé à la STT de Guadeloupe - pour création du FR302?',
+                'Doc à envoyer au SCRTA'
+            ],
+            [
+                'L\'originial du FR302 a-t\'il été récupéré à la SOLC?',
+                'Envoyer liste de chargement à STT'
+            ],
+            [
+                'Avez-vous renseigné le n° FR302 sur la listed e chargement?',
+                'En attente réception FR302'
+            ],
+            [
+                'Avez-vous envoyé le FR302 ainsi que la liste de chargement complétée et signée au SCRTA?',
+                'Renseigner n° FR302 sur liste de chargement'
+            ],
+            [
+                'Avez-vous reçu le(s) étiquette(s) du SCRTA?',
+                'Envoyer le FR302 + LC au SCRTA'
+            ],
+            [
+                'L\'envoi a-t\'il été pris en compte par le transporteur?',
+                'Bien vouloir filmer la palette / colis et appliquer les étiquettes + FR302 (dans pochette transparente non fermée)'
+            ]
+        ];
+
+        $rang = 0;
+        foreach ($etapes_pour_ENVOI_MCO as $etape) {
+            [$etape_libelle, $statut_libelle] = $etape;
+            // Statut
+            $statut = new StatutEnvoi();
+            $statut->setLibelle($statut_libelle);
+            $manager->persist($statut);
+            // Etape
+            $etape = new Etape();
+            $etape->setLibelle($etape_libelle);
+            $etape->setStatutSiNegatif($statut);
+            // Action
+            $action = new Action();
+            $action->setRang($rang);
+            $action->setEtape($etape);
+            $action->setObjet($envoi_MCO);
+
+            $manager->persist($etape);
+            $manager->persist($action);
+            $manager->flush();
+            $rang++;
         }
 
         $manager->flush();
