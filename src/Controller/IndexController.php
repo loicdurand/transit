@@ -67,7 +67,9 @@ final class IndexController extends TransitController
                 ]);
             }
 
-            return $this->redirectToRoute('transit_index', []);
+            return $this->redirectToRoute('transit_index_recapenvoi', [
+                'envoi' => $envoi->getId()
+            ]);
         }
 
         return $this->render('index/creer-envoi.html.twig', [

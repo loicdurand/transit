@@ -75,43 +75,52 @@ class AppFixtures extends Fixture
 
         // INSERTION DES STATUTS, ÉTAPES ET ACTIONS
 
+        // Création d'un statut "Initial" 
+        $statut = new StatutEnvoi();
+        $statut->setLibelle('Initial');
+        $manager->persist($statut);
+        $manager->flush();
+
         $etapes_pour_ENVOI_MCO = [
             [
                 'Avez-vous saisi les documents?',
-                'Initial'
+                'Doc à finaliser'
             ],
             [
                 'Avez-vous créé un nouvel envoi sur SCRTASIC?',
-                'Doc à finaliser'
-            ],
-            // @TODO: "Renseigner n° fiche de transport" + input
-            [
-                'La liste de chargement a-t\'elle été envoyée au SCRTA pour validation?',
                 'Envoi à créer sur SCRTASIC'
             ],
             [
-                'La liste de chargement a-t\'elle été envoyé à la STT de Guadeloupe - pour création du FR302?',
+                'Renseigner n° fiche de transport',
+                'N° fiche de transport à renseigner'
+            ],
+            [
+                'La liste de chargement a-t\'elle été envoyée au SCRTA pour validation?',
                 'Doc à envoyer au SCRTA'
             ],
             [
-                'L\'originial du FR302 a-t\'il été récupéré à la SOLC?',
+                'La liste de chargement a-t\'elle été envoyé à la STT de Guadeloupe - pour création du FR302?',
                 'Envoyer liste de chargement à STT'
             ],
             [
-                'Avez-vous renseigné le n° FR302 sur la listed e chargement?',
+                'L\'originial du FR302 a-t\'il été récupéré à la SOLC?',
                 'En attente réception FR302'
             ],
             [
-                'Avez-vous envoyé le FR302 ainsi que la liste de chargement complétée et signée au SCRTA?',
+                'Avez-vous renseigné le n° FR302 sur la listed e chargement?',
                 'Renseigner n° FR302 sur liste de chargement'
             ],
             [
-                'Avez-vous reçu le(s) étiquette(s) du SCRTA?',
+                'Avez-vous envoyé le FR302 ainsi que la liste de chargement complétée et signée au SCRTA?',
                 'Envoyer le FR302 + LC au SCRTA'
             ],
             [
+                'Avez-vous reçu le(s) étiquette(s) du SCRTA?',
+                'En attente des étiquettes du SCRTA'
+            ],
+            [
                 'L\'envoi a-t\'il été pris en compte par le transporteur?',
-                'Bien vouloir filmer la palette / colis et appliquer les étiquettes + FR302 (dans pochette transparente non fermée)'
+                'Filmer la palette / colis et appliquer les étiquettes + FR302 (dans pochette transparente non fermée)'
             ]
         ];
 

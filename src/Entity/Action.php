@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ActionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OrderBy;
 
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
 class Action
@@ -14,6 +15,7 @@ class Action
     private ?int $id = null;
 
     #[ORM\Column]
+    #[OrderBy(['sortOrder' => 'ASC'])]
     private ?int $rang = null;
 
     #[ORM\ManyToOne]
