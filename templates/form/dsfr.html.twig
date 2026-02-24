@@ -17,17 +17,30 @@
         {%- set required = false -%}
     {%- endif -%}
     <input type="{{ type }}" {{ block('widget_attributes') }} class="fr-input" {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    
 {%- endblock form_widget_simple -%}
 
 {%- block form_widget_compound -%}
     <div {{ block('widget_container_attributes') }}>
         {%- if form is rootform -%}
-            {{ form_errors(form) }}
+           {{ form_errors(form) }}
         {%- endif -%}
         {{- block('form_rows') -}}
         {{- form_rest(form) -}}
     </div>
 {%- endblock form_widget_compound -%}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+
+            <ul class="fr-messages-group">
+                {% for error in errors %}
+                    <li class="fr-message fr-message--error">{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        
+    {% endif %}
+{% endblock form_errors %}
 
 {# RADIO, CHECKBOXS #}
 

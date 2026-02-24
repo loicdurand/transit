@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EnvoiRepository::class)]
+#[UniqueEntity('titre', message: 'Ce titre a déjà été utilisé. Veuillez choisir un titre unique.', errorPath: 'titre')]
 class Envoi
 {
     #[ORM\Id]
@@ -16,7 +18,7 @@ class Envoi
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 25, unique: true)]
     private ?string $titre = null;
 
     #[ORM\Column(length: 50, nullable: true)]

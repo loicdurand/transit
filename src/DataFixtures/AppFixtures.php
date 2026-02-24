@@ -21,6 +21,10 @@ class AppFixtures extends Fixture
 
         $types_envoi = [
             [
+                'libelle' => 'Sans objet',
+                'max' => null
+            ],
+            [
                 'libelle' => 'Palette',
                 'max' => null
             ],
