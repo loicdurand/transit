@@ -129,27 +129,27 @@ class AppFixtures extends Fixture
         ];
 
         $rang = 0;
-        foreach ($etapes_pour_ENVOI_MCO as $etape) {
-            [$etape_libelle, $statut_libelle] = $etape;
-            // Statut
-            $statut = new StatutEnvoi();
-            $statut->setLibelle($statut_libelle);
-            $manager->persist($statut);
-            // Etape
-            $etape = new Etape();
-            $etape->setLibelle($etape_libelle);
-            $etape->setStatutSiNegatif($statut);
-            // Action
-            $action = new Action();
-            $action->setRang($rang);
-            $action->setEtape($etape);
-            $action->setObjet($envoi_MCO);
+        // foreach ($etapes_pour_ENVOI_MCO as $etape) {
+        //     [$etape_libelle, $statut_libelle] = $etape;
+        //     // Statut
+        //     $statut = new StatutEnvoi();
+        //     $statut->setLibelle($statut_libelle);
+        //     $manager->persist($statut);
+        //     // Etape
+        //     $etape = new Etape();
+        //     $etape->setLibelle($etape_libelle);
+        //     $etape->setStatutSiNegatif($statut);
+        //     // Action
+        //     $action = new Action();
+        //     $action->setRang($rang);
+        //     $action->setEtape($etape);
+        //     $action->setObjet($envoi_MCO);
 
-            $manager->persist($etape);
-            $manager->persist($action);
-            $manager->flush();
-            $rang++;
-        }
+        //     $manager->persist($etape);
+        //     $manager->persist($action);
+        //     $manager->flush();
+        //     $rang++;
+        // }
 
         $manager->flush();
     }

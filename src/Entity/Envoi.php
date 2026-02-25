@@ -10,7 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EnvoiRepository::class)]
-#[UniqueEntity('titre', message: 'Ce titre a déjà été utilisé. Veuillez choisir un titre unique.', errorPath: 'titre')]
+#[UniqueEntity(
+    'titre',
+    message: 'Ce titre a déjà été utilisé. Veuillez choisir un titre unique.',
+    errorPath: 'titre'
+)]
 class Envoi
 {
     #[ORM\Id]
@@ -175,15 +179,15 @@ class Envoi
         return $this;
     }
 
-    public function removeAction(Action $action): static
-    {
-        if ($this->actions->removeElement($action)) {
-            // set the owning side to null (unless already changed)
-            if ($action->getEnvoi() === $this) {
-                $action->setEnvoi(null);
-            }
-        }
+    // public function removeAction(Action $action): static
+    // {
+    //     if ($this->actions->removeElement($action)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($action->getEnvoi() === $this) {
+    //             $action->setEnvoi(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }

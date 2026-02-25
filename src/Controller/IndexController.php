@@ -196,8 +196,6 @@ final class IndexController extends TransitController
         $objet_id = $data['objet_id'];
         $etapes = $data['etapes'];
 
-        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
-
         $envoi_ou_objet = 'objet';
 
         // Si on a des actions déjà existantes pour cet objet, ça signifie que l'Objet a déjà été configuré.
@@ -216,7 +214,6 @@ final class IndexController extends TransitController
         foreach ($prev_actions as $action) {
             $entityManager->remove($action);
             $entityManager->flush();
-            $envoi->removeAction($action);
         }
 
         foreach ($etapes as $etape) {
@@ -252,16 +249,18 @@ final class IndexController extends TransitController
                 $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
                 $action->setObjet($objet);
             } else {
+                $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
                 $action->setEnvoi($envoi);
             }
             $entityManager->persist($action);
             $entityManager->flush();
         }
 
-        $objet = $entityManager->getRepository(Objet::class)->find($objet_id);
+        $data = $envoi_ou_objet === 'objet' ? $objet : $envoi;
+
         return $this->json([
-            'success' => $objet->getActions()->count() > 0,
-            'data' => $objet
+            'success' => $data->getActions()->count() > 0,
+            'data' => $data
         ]);
     }
 }
