@@ -11,6 +11,7 @@ use App\Controller\TransitController;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\Action;
+use App\Entity\StatutEnvoi;
 use App\Form\EnvoiCompletionType;
 
 final class EnvoiController extends TransitController
@@ -22,6 +23,8 @@ final class EnvoiController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
+        $statut_final = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $this->statut_final_libelle]);
+
         $envoi_id = $this->request->query->get('envoi');
         $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
         $actions = $envoi->getActions(); //  les Actions sont toujours triées par rang (cf App\Entity\Envoi::getActions())
@@ -32,8 +35,10 @@ final class EnvoiController extends TransitController
             }
         }
 
-
-        $envoi->setStatut($current_action->getEtape()->getStatutSiNegatif());
+        if ($current_action != null)
+            $envoi->setStatut($current_action->getEtape()->getStatutSiNegatif());
+        else
+            $envoi->setStatut($statut_final);
 
         $form = $this->createForm(EnvoiCompletionType::class, $envoi);
 
@@ -42,8 +47,35 @@ final class EnvoiController extends TransitController
         // }
 
         return $this->render('envoi/index.html.twig', [
+            'user' => $user,
             'envoi' => $envoi,
             'form' => $form
+        ]);
+    }
+
+    #[Route('/envoi/marquer-action-traitee', name: 'transit_envoi_marqueractiontraitee', methods: ['POST'])]
+    public function marqueractiontraitee(EntityManagerInterface $entityManager)
+    {
+        $data = (array) json_decode($this->request->getContent());
+
+        $envoi_id = $data['envoi_id'];
+        $action_id = $data['action_id'];
+        $checked = $data['checked'];
+
+        $action = $entityManager->getRepository(Action::class)->find($action_id);
+        $action->setResultat($checked);
+        $entityManager->persist($action);
+        $entityManager->flush();
+
+        $action_suivante = $entityManager->getRepository(Action::class)->findOneBy([
+            'envoi' => $envoi_id,
+            'rang' => $checked ? $action->getRang() + 1 : $action->getRang()
+        ]);
+
+        return $this->json([
+            'success' => true,
+            'data' => $action,
+            'statut_suivant' => $action_suivante ? $action_suivante->getEtape()->getStatutSiNegatif() : null
         ]);
     }
 }

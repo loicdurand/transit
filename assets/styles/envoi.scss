@@ -5,7 +5,7 @@ ul.task-list {
 
 	/* Style the list items */
 	li {
-		cursor: pointer;
+		// cursor: pointer;
 		position: relative;
 		padding: 12px 8px 12px 40px;
 		background: #eee;
@@ -26,8 +26,10 @@ ul.task-list {
 	}
 
 	/* Darker background-color on hover */
-	li:hover {
-		background: #ddd;
+	li.cliquable:hover {
+		cursor: pointer;
+		color: var(--background-contrast-info);
+		background-color: var(--text-default-info);
 	}
 
 	/* When clicked on, add a background color and strike out text */
@@ -38,7 +40,7 @@ ul.task-list {
 	}
 
 	/* Add a "checked" mark when clicked on */
-	li.checked::before {
+	li.cliquable.checked::before {
 		content: '';
 		position: absolute;
 		border-color: #fff;

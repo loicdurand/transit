@@ -23,7 +23,7 @@
 
 	<main class="fr-mt-4w">
 
-		<p class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
+		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
 		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
 
@@ -67,9 +67,9 @@
 			Pour modifier la liste de taches ci-dessous,
 			<a href="{{ path('transit_index_initobjet',{envoi: envoi.id}) }}">cliquez ici</a>.
 
-			<ul id="task-list" class="task-list">
+			<ul data-envoi="{{ envoi.id }}" id="task-list" class="task-list">
 				{% for action in envoi.actions %}
-					<li {% if action.resultat %} class="checked" {% endif %}>{{ action.etape.libelle }}</li>
+					<li data-action="{{ action.id}}" {% if action.resultat %} class="checked" {% endif %}>{{ action.etape.libelle }}</li>
 				{% endfor %}
 			</ul>
 

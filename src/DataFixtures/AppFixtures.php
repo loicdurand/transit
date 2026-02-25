@@ -79,11 +79,13 @@ class AppFixtures extends Fixture
 
         // INSERTION DES STATUTS, ÉTAPES ET ACTIONS
 
-        // Création d'un statut "Initial" 
-        $statut = new StatutEnvoi();
-        $statut->setLibelle('Initial');
-        $manager->persist($statut);
-        $manager->flush();
+        // Création des statuts "Initial" et "Finalisé"
+        foreach (['Initial', 'Finalisé'] as $libelle) {
+            $statut = new StatutEnvoi();
+            $statut->setLibelle($libelle);
+            $manager->persist($statut);
+            $manager->flush();
+        }
 
         $etapes_pour_ENVOI_MCO = [
             [

@@ -36,8 +36,6 @@ sauverObjetButton.addEventListener('click', () => {
             }
         });
 
-    console.log(etapes);
-
     axios.post(`/${prefix}/sauver-actions`, { envoi_id, objet_id, etapes })
         .then((response) => {
             const { success } = response.data;
@@ -140,6 +138,6 @@ function saveOrder(): Task[] {
     if (!items.length) {
         sauverObjetButton.disabled = true;
     }
-    console.log("Nouvel ordre :", items);
+    // console.log("Nouvel ordre :", items);
     return items;
 }
