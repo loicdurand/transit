@@ -8,12 +8,14 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Controller\TransitController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\Action;
 use App\Entity\StatutEnvoi;
 use App\Entity\TypeEnvoi;
 use App\Entity\Numero;
+use App\Entity\Fichier;
 use App\Form\EnvoiCompletionType;
 use App\Form\NumeroType;
 
@@ -167,5 +169,30 @@ final class EnvoiController extends TransitController
         return $this->json([
             'success' => true
         ]);
+    }
+
+    #[Route('/envoi/upload/{envoi_id}', name: 'transit_envoi__upload', methods: ['POST'])]
+    public function upload(EntityManagerInterface $entityManager, string $envoi_id): Response
+    {
+
+        // L'utilisateur uploade ses fichiers via formulaire POST
+        // On l'enregistre dans /assets/files/ avec un nom de fichier unique
+        $file = $this->request->files->get('file');
+        $filePath = $this->getParameter('kernel.project_dir') . '/assets/files/';
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $newFilename = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        try {
+            $file->move($filePath, $newFilename);
+        } catch (FileException $e) {
+            return $this->json(['success' => 'false', 'message' => 'Erreur lors de l\'upload du fichier.']);
+        }
+        $fichier = new Fichier();
+        $fichier->setChemin($newFilename);
+
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+        $envoi->setFichier($fichier);
+        $entityManager->persist($envoi);
+        $entityManager->flush();
+        return $this->json(['success' => true, 'filename' => $newFilename]);
     }
 }

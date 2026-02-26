@@ -61,10 +61,17 @@ class Envoi
     #[ORM\OneToMany(targetEntity: Numero::class, mappedBy: 'envoi', orphanRemoval: true, cascade: ['persist'])]
     private Collection $numeros;
 
+    /**
+     * @var Collection<int, Fichier>
+     */
+    #[ORM\OneToMany(targetEntity: Fichier::class, mappedBy: 'envoi', orphanRemoval: true)]
+    private Collection $fichier;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
         $this->numeros = new ArrayCollection();
+        $this->fichier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -239,6 +246,36 @@ class Envoi
             // set the owning side to null (unless already changed)
             if ($numero->getEnvoi() === $this) {
                 $numero->setEnvoi(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Fichier>
+     */
+    public function getFichier(): Collection
+    {
+        return $this->fichier;
+    }
+
+    public function addFichier(Fichier $fichier): static
+    {
+        if (!$this->fichier->contains($fichier)) {
+            $this->fichier->add($fichier);
+            $fichier->setEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFichier(Fichier $fichier): static
+    {
+        if ($this->fichier->removeElement($fichier)) {
+            // set the owning side to null (unless already changed)
+            if ($fichier->getEnvoi() === $this) {
+                $fichier->setEnvoi(null);
             }
         }
 
