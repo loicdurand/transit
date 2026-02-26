@@ -1,3 +1,13 @@
+.cs-btn--xs {
+	position: absolute;
+	left: 0;
+	top: 3px;
+	padding: 0 !important;
+	width: 1rem;
+	height: 1rem;
+	min-height: 1rem !important;
+}
+
 ul.task-list {
 	margin: 0;
 	padding: 0;
@@ -52,18 +62,5 @@ ul.task-list {
 		height: 15px;
 		width: 7px;
 	}
-
-	/* Style the close button */
-	// .close {
-	// 	position: absolute;
-	// 	right: 0;
-	// 	top: 0;
-	// 	padding: 12px 16px;
-	// }
-
-	// .close:hover {
-	// 	background-color: #f44336;
-	// 	color: white;
-	// }
 
 }

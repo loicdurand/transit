@@ -55,9 +55,16 @@ class Envoi
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'envoi', orphanRemoval: true)]
     private Collection $actions;
 
+    /**
+     * @var Collection<int, Numero>
+     */
+    #[ORM\OneToMany(targetEntity: Numero::class, mappedBy: 'envoi', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $numeros;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
+        $this->numeros = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,4 +197,51 @@ class Envoi
 
     //     return $this;
     // }
+
+    public function getPercentage(): int
+    {
+        $percents = 0;
+        $actions = $this->getActions();
+        $statut = $this->getStatut();
+
+        foreach ($actions as $action) {
+            $action_etape = $action->getEtape();
+            $action_etape_statut = $action_etape->getStatutSiNegatif();
+            if ($action_etape_statut === $statut) {
+                $percents = round($action->getRang() / count($actions) * 100);
+            }
+        }
+
+        return $percents;
+    }
+
+    /**
+     * @return Collection<int, Numero>
+     */
+    public function getNumeros(): Collection
+    {
+        return $this->numeros;
+    }
+
+    public function addNumero(Numero $numero): static
+    {
+        if (!$this->numeros->contains($numero)) {
+            $this->numeros->add($numero);
+            $numero->setEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNumero(Numero $numero): static
+    {
+        if ($this->numeros->removeElement($numero)) {
+            // set the owning side to null (unless already changed)
+            if ($numero->getEnvoi() === $this) {
+                $numero->setEnvoi(null);
+            }
+        }
+
+        return $this;
+    }
 }

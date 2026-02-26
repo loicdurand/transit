@@ -58,6 +58,25 @@
 
 		</div>
 
+		<p class="fr-mb-0 fr-pl-3w relative">
+			<button id="modal-creer-numero--trigger" aria-controls="modal-creer-numero" data-fr-opened="false" type="button" title="Ajouter une référence" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter une référence</button>
+			Autres références:
+		</p>
+		<ul class="fr-mb-3w">
+			{% for numero in envoi.numeros %}
+				<li class="fr-pl-3w relative bold list-style-type_none">
+					<button type="button" title="Supprimer cette référence" data-id="{{numero.id}}" class="bouton-supprimer-numero fr-btn fr-icon-subtract-line fr-btn--secondary fr-btn--sm cs-btn--xs fr-mr-2w" style="top: 12px;">Supprimer cette référence</button>
+					<span class="libelle">{{numero.libelle}}</span>
+					n°
+					<button type="button" data-id="{{numero.id}}" data-libelle="{{numero.libelle}}" data-valeur="{{numero.valeur}}" class="modal-creer-numero--trigger fr-btn fr-btn--tertiary-no-outline fr-pl-0 fr-pr-0">
+						<span class="fr-link valeur">{{numero.valeur}}</span>
+					</button>
+				</li>
+			{% else %}
+				<li>Néant</li>
+			{% endfor %}
+		</ul>
+
 		{{ form_end(form)}}
 
 		<h4>Liste de tâches</h4>
@@ -74,5 +93,9 @@
 			</ul>
 
 		</p>
-	</p>
-</main>{% endblock %}
+
+		{% include "components/modale_creer-numero.html.twig" %}
+
+	</main>
+
+{% endblock %}

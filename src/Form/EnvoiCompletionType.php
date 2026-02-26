@@ -20,16 +20,19 @@ class EnvoiCompletionType extends AbstractType
         $builder
             // ->add('titre')
             ->add('reference', null, [
+                'label' => 'Référence principale',
                 'attr' => [
-                    'placeholder' => 'Réforme N°X/20XX'
+                    'placeholder' => 'ex: Réforme N°X/20XX'
                 ]
             ])
             // ->add('date')
             ->add('type', EntityType::class, [
+                'label' => 'Type d\'envoi',
                 'class' => TypeEnvoi::class,
                 'choice_label' => 'libelle',
             ])
             ->add('quantite', NumberType::class, [
+                'label' => 'Quantité',
                 'html5' => true,
                 'attr' => [
                     'min' => 1,

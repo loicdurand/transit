@@ -63,7 +63,7 @@ list?.addEventListener('click', function (event) {
 });
 
 // Envoi des saisies dans le formulaire (référence, type d'envoi et quantité) dès qu'un changement survient
-if (list != null)
+if (list != null) {
     ['reference', 'type', 'quantite'].forEach(field => {
         const // 
             envoi_id = list.dataset.envoi,
@@ -73,11 +73,115 @@ if (list != null)
             axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value })
                 .then((response) => {
                     const { success, data } = response.data;
-                    // if (success) {
-
-                    // }
+                    if (success)
+                        location.reload();
                 });
         })
     })
 
-manage_taches_cliquables();
+    manage_taches_cliquables();
+
+    /**
+     * MODALE D'AJOUT / GESTION DE RÉFÉRENCE
+     */
+
+    const // 
+        modale_numero = document.getElementById('modal-creer-numero'),
+        modale_numero_trigger = document.getElementById('modal-creer-numero--trigger'),
+        modale_numero_submit = document.getElementById('modal-creer-numero--submit'),
+        modale_numero_loader = document.getElementById('modal-creer-numero--loader'),
+
+        inputs_numero = modale_numero?.getElementsByTagName('input'),
+
+        libelle_input = (document.getElementById('numero_libelle') as HTMLInputElement),
+        valeur_input = (document.getElementById('numero_valeur') as HTMLInputElement);
+
+    if (modale_numero_submit && inputs_numero && inputs_numero.length) {
+
+        [...inputs_numero].forEach(input_numero => {
+            input_numero?.addEventListener('keyup', (event) => {
+                const values = [...inputs_numero].filter(input => input.value === '');
+                if (values.length) {
+                    modale_numero_submit?.setAttribute('disabled', 'disabled');
+                } else {
+                    modale_numero_submit?.removeAttribute('disabled');
+                }
+            });
+        });
+
+        /**
+        * Lors du clic sur le Submit (de la modale des numéros), on envoie les données saisies au serveur pour sauvegarde en BDD
+        */
+
+        modale_numero_submit?.addEventListener('click', (event) => {
+
+            if (modale_numero_loader === null)
+                return false;
+
+            modale_numero_loader.classList.remove('fr-hidden');
+            const // 
+                target = event.target,
+                numero_id = target && 'dataset' in target && (target.dataset as { id: string }).id,
+                envoi_id = list.dataset.envoi,
+                libelle = libelle_input?.value,
+                valeur = valeur_input?.value;
+
+            axios.post(`/${prefix}/envoi/sauver-numero`, { envoi_id, numero_id, libelle, valeur })
+                .then((response) => {
+                    const { success, data } = response.data;
+                    modale_numero_loader.classList.add('fr-hidden');
+                    modale_numero_submit.setAttribute('disabled', 'disabled');
+                    modale_numero_submit.dataset.id = '';
+                    fermer_modale_numero();
+                    if (success)
+                        location.reload();
+                })
+                .catch(err => {
+                    modale_numero_loader.classList.add('fr-hidden');
+                });
+        });
+
+        const reference_triggers = [...document.getElementsByClassName('modal-creer-numero--trigger')];
+        reference_triggers.forEach(trigger => {
+            trigger.addEventListener('click', (event) => {
+                const // 
+                    target = event.currentTarget;
+                if (target && 'dataset' in target) {
+                    const { id, libelle, valeur } = target.dataset as { id: string, libelle: string, valeur: string };
+                    libelle_input.value = libelle;
+                    valeur_input.value = valeur;
+                    modale_numero_submit.dataset.id = id;
+                    modale_numero_submit?.removeAttribute('disabled');
+                    ouvrir_modale_numero();
+                }
+            });
+        })
+
+    }
+
+    const boutons_suppr_numero = [...document.getElementsByClassName('bouton-supprimer-numero')];
+    boutons_suppr_numero.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const // 
+                target = event.target,
+                numero_id = target && 'dataset' in target && (target.dataset as { id: string }).id;
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette référence?'))
+                axios.delete(`/${prefix}/envoi/supprimer-numero/${numero_id}`)
+                    .then((response) => {
+                        const { success, data } = response.data;
+                        if (success)
+                            location.reload();
+                    });
+        })
+    });
+
+    function ouvrir_modale_numero() {
+        modale_numero_trigger?.setAttribute('data-fr-opened', 'true');
+    }
+
+    function fermer_modale_numero() {
+        modale_numero_trigger?.setAttribute('data-fr-opened', 'false');
+    }
+
+}
+

@@ -13,7 +13,10 @@ use App\Entity\Envoi;
 use App\Entity\Action;
 use App\Entity\StatutEnvoi;
 use App\Entity\TypeEnvoi;
+use App\Entity\Numero;
 use App\Form\EnvoiCompletionType;
+use App\Form\NumeroType;
+
 
 final class EnvoiController extends TransitController
 {
@@ -44,13 +47,16 @@ final class EnvoiController extends TransitController
         $form = $this->createForm(EnvoiCompletionType::class, $envoi);
 
         $form->handleRequest($this->request);
-        // if ($form->isSubmitted() && $form->isValid()) {
-        // }
+
+        $numero = new Numero();
+        $numero->setEnvoi($envoi);
+        $numero_form = $this->createForm(NumeroType::class, $numero);
 
         return $this->render('envoi/index.html.twig', [
             'user' => $user,
             'envoi' => $envoi,
-            'form' => $form
+            'form' => $form,
+            'numero_form' => $numero_form
         ]);
     }
 
@@ -122,6 +128,44 @@ final class EnvoiController extends TransitController
         return $this->json([
             'success' => true,
             'data' => $envoi
+        ]);
+    }
+
+    #[Route('/envoi/sauver-numero', name: 'transit_envoi_sauvernumero', methods: ['POST'])]
+    public function sauvernumero(EntityManagerInterface $entityManager)
+    {
+        $data = (array) json_decode($this->request->getContent());
+
+        $envoi_id = $data['envoi_id'];
+        $numero_id = $data['numero_id'];
+        $libelle = $data['libelle'];
+        $valeur = $data['valeur'];
+
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+        $numero_exists = $numero_id !== '' ? $entityManager->getRepository(Numero::class)->find($numero_id) : null;
+        $numero = !is_null($numero_exists) ? $numero_exists : new Numero();
+        $numero->setEnvoi($envoi);
+        $numero->setLibelle($libelle);
+        $numero->setValeur($valeur);
+        $envoi->addNumero($numero);
+        $entityManager->persist($envoi);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'data' => $numero
+        ]);
+    }
+
+    #[Route('/envoi/supprimer-numero/{numero_id}', name: 'transit_envoi_supprimernumero', methods: ['DELETE'])]
+    public function supprimer(EntityManagerInterface $entityManager, string $numero_id)
+    {
+        $numero = $entityManager->getRepository(Numero::class)->find($numero_id);
+        $entityManager->remove($numero);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true
         ]);
     }
 }
