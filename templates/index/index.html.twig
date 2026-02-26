@@ -42,6 +42,7 @@
 					<li class="fr-mb-2w relative">
 						<h4 class="fr-h6 fr-mr-2w inline">{{ envoi.titre }}</h4>
 						<a href="{{ path('transit_envoi',{ envoi: envoi.id }) }}" target="_self" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
+						{# <p id="badge_statut_libelle" class="inline fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p> #}
 
 					</li>
 				{% endfor %}

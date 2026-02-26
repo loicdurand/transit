@@ -43,7 +43,7 @@ list?.addEventListener('click', function (event) {
         // Données à transmettre au serveur
         const // 
             checked = target.classList.contains('checked'),
-            envoi_id = target.parentElement?.dataset.envoi,
+            envoi_id = list.dataset.envoi,
             action_id = target.dataset.action;
 
         axios.post(`/${prefix}/envoi/marquer-action-traitee`, { envoi_id, action_id, checked })
@@ -61,5 +61,23 @@ list?.addEventListener('click', function (event) {
     manage_taches_cliquables();
 
 });
+
+// Envoi des saisies dans le formulaire (référence, type d'envoi et quantité) dès qu'un changement survient
+if (list != null)
+    ['reference', 'type', 'quantite'].forEach(field => {
+        const // 
+            envoi_id = list.dataset.envoi,
+            target = document.getElementById(`envoi_completion_${field}`) as HTMLInputElement;
+        target?.addEventListener('input', (event) => {
+            const value = target.value;
+            axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value })
+                .then((response) => {
+                    const { success, data } = response.data;
+                    // if (success) {
+
+                    // }
+                });
+        })
+    })
 
 manage_taches_cliquables();

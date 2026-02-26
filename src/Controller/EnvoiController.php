@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\Action;
 use App\Entity\StatutEnvoi;
+use App\Entity\TypeEnvoi;
 use App\Form\EnvoiCompletionType;
 
 final class EnvoiController extends TransitController
@@ -72,10 +73,55 @@ final class EnvoiController extends TransitController
             'rang' => $checked ? $action->getRang() + 1 : $action->getRang()
         ]);
 
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+        $current_action = $action_suivante ? $action_suivante : null;
+        if ($current_action != null) {
+            $envoi->setStatut($current_action->getEtape()->getStatutSiNegatif());
+        } else {
+            $statut_final = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $this->statut_final_libelle]);
+            $envoi->setStatut($statut_final);
+        }
+        $entityManager->persist($envoi);
+        $entityManager->flush();
+
         return $this->json([
             'success' => true,
             'data' => $action,
             'statut_suivant' => $action_suivante ? $action_suivante->getEtape()->getStatutSiNegatif() : null
+        ]);
+    }
+
+
+    #[Route('/envoi/sauver-donnee', name: 'transit_envoi_sauverdonnee', methods: ['POST'])]
+    public function sauverdonnee(EntityManagerInterface $entityManager)
+    {
+        $data = (array) json_decode($this->request->getContent());
+
+        $envoi_id = $data['envoi_id'];
+        $field = $data['field'];
+        $value = $data['value'];
+
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
+
+        switch ($field) {
+            case 'type':
+                $type = $entityManager->getRepository(TypeEnvoi::class)->find($value);
+                $envoi->setType($type);
+                break;
+
+            default:
+                $method = 'set' . ucfirst($field);
+                $value = $value != '' ? $value : null;
+                $envoi->$method($value);
+                break;
+        }
+
+        $entityManager->persist($envoi);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'data' => $envoi
         ]);
     }
 }

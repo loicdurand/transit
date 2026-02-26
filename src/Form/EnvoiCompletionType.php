@@ -33,8 +33,7 @@ class EnvoiCompletionType extends AbstractType
                 'html5' => true,
                 'attr' => [
                     'min' => 1,
-                    'max' => 5,
-                    'value' => 1
+                    'max' => 5
                 ]
             ])
             // ->add('destinataire', EntityType::class, [
