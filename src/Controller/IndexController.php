@@ -37,6 +37,21 @@ final class IndexController extends TransitController
         ]);
     }
 
+    #[Route('/archives', name: 'transit_index_archives')]
+    public function archives(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager): Response
+    {
+
+        if (is_null($user))
+            return $this->redirectToRoute('transit_login');
+
+        $envois = $entityManager->getRepository(Envoi::class)->findBy(['archive' => true]);
+
+        return $this->render('index/archives.html.twig', [
+            'user' => $user,
+            'envois' => $envois
+        ]);
+    }
+
     #[Route('/download/{fichier_token}', name: 'transit_index_download')]
     public function download(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager, string $fichier_token): Response
     {

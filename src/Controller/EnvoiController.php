@@ -56,10 +56,13 @@ final class EnvoiController extends TransitController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // $data = $form->getData();
-            $envoi->setArchive(true);
+            $isArchive = $envoi->isArchive();
+            $envoi->setArchive(!$isArchive);
             $entityManager->persist($envoi);
             $entityManager->flush();
-            return $this->redirectToRoute('transit_index', []);
+            if (!$isArchive)
+                return $this->redirectToRoute('transit_index', []);
+            return $this->redirect($this->request->getUri());
         }
 
         return $this->render('envoi/index.html.twig', [

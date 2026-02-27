@@ -12,18 +12,24 @@ const prefix = '/transit';
 
 const router = new Router(prefix);
 
-router.on('/creer-envoi', () => {
-    import('./javascripts/creer-envoi.ts');
+router.on('/creer-envoi', async () => {
+    const envoi = await import('./javascripts/creer-envoi.ts');
+    envoi.default();
+
     console.log('creer-envoi.ts');
 });
 
-router.on('/init-objet', () => {
-    import('./javascripts/init-objet.ts');
+router.on('/init-objet', async () => {
+    const envoi = await import('./javascripts/init-objet.ts');
+    envoi.default();
+
     console.log('init-objet.ts');
 });
 
-router.on('/envoi', () => {
-    import('./javascripts/envoi.ts');
+router.on('/envoi', async () => {
+    const envoi = await import('./javascripts/envoi.ts');
+    envoi.default();
+
     console.log('envoi.ts');
 });
 

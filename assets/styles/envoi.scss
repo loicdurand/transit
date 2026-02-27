@@ -82,3 +82,19 @@ dd {
 dd {
 	margin-right: 2rem;
 }
+
+form {
+	position: relative;
+
+	.blocage-archives {
+		width: calc(100% + 2rem);
+		height: calc(100% - 4rem);
+		display: block;
+		position: absolute;
+		background-color: rgba(22, 22, 22, 0.032);
+		border-radius: 6px;
+		left: -1rem;
+		top: -1rem;
+		z-index: 1;
+	}
+}

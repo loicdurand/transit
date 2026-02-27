@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil
+{% endblock %}
+
+{% block body %}
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">Voir le fil d&#39;arianne</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page" href="{{ path('transit_index_archives') }}">Archives</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	{# <h2 class="fr-h6">Actions rapides</h2>
+
+	<ul class="fr-btns-group fr-btns-group--inline fr-grid-row fr-grid-row--gutters">
+		<li class="fr-col-6">
+			<a href="{{ path('transit_index_creerenvoi') }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer un envoi</a>
+		</li>
+		<li class="fr-col-6">
+			<button disabled type="button" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer une réception</button>
+		</li>
+	</ul> #}
+
+	<main class="fr-mt-4w">
+
+		<h2>Archives</h2>
+
+		<h3 class="underline">Envoi:</h3>
+
+		{% if envois | length %}
+
+			<ul>
+				{% for envoi in envois %}
+					<li class="fr-mb-2w relative">
+						<h4 class="fr-h6 fr-mr-2w inline">{{ envoi.titre }}</h4>
+						<a href="{{ path('transit_envoi',{ envoi: envoi.id }) }}" target="_self" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
+						{# <p id="badge_statut_libelle" class="inline fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p> #}
+
+					</li>
+				{% endfor %}
+			</ul>
+
+		{% else %}
+
+			<p>Vous n'avez encore aucun dossier en cours...</p>
+
+		{% endif %}
+
+		<h3 class="underline">Réception:</h3>
+
+		<p>Vous n'avez encore aucun dossier en cours...</p>
+
+		<h3 class="underline">Matériel en instance:</h3>
+
+		<p>Vous n'avez encore aucun dossier en cours...</p>
+
+
+	</main>
+
+{% endblock %}

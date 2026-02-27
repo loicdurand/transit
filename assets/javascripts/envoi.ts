@@ -2,74 +2,79 @@ import '../styles/envoi.scss';
 
 import axios from 'axios';
 
-const // 
-    prefix = 'transit',
-    list = document.getElementById('task-list'),
-    archiver_button = document.getElementById('archiver-button') as HTMLButtonElement,
-    tasks = list?.children || [];
+export default function () {
 
-// Les tâches doivent être marquées comme terminées l'une après l'autre.
-// Donc on parcours les tâches jusqu'à la dernière terminée. Seules la suivante ET celle-ci pourront être dé-cochées.
+    const // 
+        prefix = 'transit',
+        list = document.getElementById('task-list') as HTMLUListElement,
+        archiver_button = document.getElementById('archiver-button') as HTMLButtonElement,
+        tasks = list?.children || [];
 
-function manage_taches_cliquables() {
+    // Les tâches doivent être marquées comme terminées l'une après l'autre.
+    // Donc on parcours les tâches jusqu'à la dernière terminée. Seules la suivante ET celle-ci pourront être dé-cochées.
 
-    // On vire toutes les tâches précédemment marquées comme cliquables, pour éviter toute erreur.
-    [...document.getElementsByClassName('cliquable')].forEach(task => task.classList.remove('cliquable'));
-    archiver_button.disabled = true;
+    function manage_taches_cliquables() {
 
-    let prev_task;
-    for (let task of tasks) {
-        if (task.classList.contains('checked')) {
-            task.classList.remove('cliquable');
-            prev_task = task;
-        } else {
-            prev_task?.classList.add('cliquable');
-            task.classList.add('cliquable');
-            break;
-        }
-    }
+        // On vire toutes les tâches précédemment marquées comme cliquables, pour éviter toute erreur.
+        [...document.getElementsByClassName('cliquable')].forEach(task => task.classList.remove('cliquable'));
+        archiver_button.disabled = true;
 
-    // Gestion du cas où toutes les tâches ont été faites
-    if (list?.querySelector('.cliquable') === null) {
-        tasks[tasks.length - 1]?.classList.add('cliquable');
-        archiver_button.disabled = false;
-    }
-}
-
-if (list !== null) {
-
-    const envoi_id = list.dataset.envoi;
-
-    // Lors du clic sur une tâche de la liste, on bascule la classe "checked" sur l'élément cliqué, afin qu'elle apparaisse barrée ou non. 
-    list?.addEventListener('click', function (event) {
-        const target = event.target as HTMLElement;
-
-        if (target.tagName === 'LI' && target.classList.contains('cliquable')) {
-            target.classList.toggle('checked');
-
-            // Données à transmettre au serveur
-            const // 
-                checked = target.classList.contains('checked'),
-                action_id = target.dataset.action;
-
-            axios.post(`/${prefix}/envoi/marquer-action-traitee`, { envoi_id, action_id, checked })
-                .then((response) => {
-                    const { success, statut_suivant } = response.data;
-                    // sauverObjetButton_loader.classList.add('fr-hidden');
-                    if (success) {
-                        const badge_statut_libelle = document.getElementById('badge_statut_libelle');
-                        if (badge_statut_libelle !== null)
-                            badge_statut_libelle.innerText = statut_suivant !== null ? statut_suivant.libelle : 'Finalisé';
-                    }
-                });
+        let prev_task;
+        for (let task of tasks) {
+            if (task.classList.contains('checked')) {
+                task.classList.remove('cliquable');
+                prev_task = task;
+            } else {
+                prev_task?.classList.add('cliquable');
+                task.classList.add('cliquable');
+                break;
+            }
         }
 
-        manage_taches_cliquables();
+        // Gestion du cas où toutes les tâches ont été faites
+        if (list?.querySelector('.cliquable') === null) {
+            tasks[tasks.length - 1]?.classList.add('cliquable');
+            archiver_button.disabled = false;
+        }
 
-    });
+    }
 
-    // Envoi des saisies dans le formulaire (référence, type d'envoi et quantité) dès qu'un changement survient
-    if (list != null) {
+    manage_taches_cliquables();
+
+    // ATTENTION: Le code de ce script ne sera exécuté QUE si l'envoi n'est pas archivé
+    if (archiver_button.innerText.trim() !== 'Réactiver') {
+
+        const envoi_id = list.dataset.envoi;
+
+        // Lors du clic sur une tâche de la liste, on bascule la classe "checked" sur l'élément cliqué, afin qu'elle apparaisse barrée ou non. 
+        list?.addEventListener('click', function (event) {
+            const target = event.target as HTMLElement;
+
+            if (target.tagName === 'LI' && target.classList.contains('cliquable')) {
+                target.classList.toggle('checked');
+
+                // Données à transmettre au serveur
+                const // 
+                    checked = target.classList.contains('checked'),
+                    action_id = target.dataset.action;
+
+                axios.post(`/${prefix}/envoi/marquer-action-traitee`, { envoi_id, action_id, checked })
+                    .then((response) => {
+                        const { success, statut_suivant } = response.data;
+                        // sauverObjetButton_loader.classList.add('fr-hidden');
+                        if (success) {
+                            const badge_statut_libelle = document.getElementById('badge_statut_libelle');
+                            if (badge_statut_libelle !== null)
+                                badge_statut_libelle.innerText = statut_suivant !== null ? statut_suivant.libelle : 'Finalisé';
+                        }
+                    });
+            }
+
+            manage_taches_cliquables();
+
+        });
+
+        // Envoi des saisies dans le formulaire (référence, type d'envoi et quantité) dès qu'un changement survient
         ['reference', 'type', 'quantite'].forEach(field => {
             const target = document.getElementById(`envoi_completion_${field}`) as HTMLInputElement;
             target?.addEventListener('input', (event) => {
@@ -186,76 +191,75 @@ if (list !== null) {
             modale_numero_trigger?.setAttribute('data-fr-opened', 'false');
         }
 
-    }
-
-    const boutons_suppr_fichier = [...document.getElementsByClassName('bouton-supprimer-fichier')];
-    boutons_suppr_fichier.forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            const // 
-                target = event.target,
-                fichier_token = target && 'dataset' in target && (target.dataset as { token: string }).id;
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce document?'))
-                axios.delete(`/${prefix}/envoi/supprimer-fichier/${fichier_token}`)
-                    .then((response) => {
-                        const { success, data } = response.data;
-                        if (success)
-                            location.reload();
-                    });
-        })
-    });
-
-    /**
-     * GESTION DE L'UPLOAD DE FICHIERS (fait avec Gemini)
-     */
-
-    const uploadFiles = async (): Promise<void> => {
-
-        const modale_fichier_loader = document.getElementById('modal-creer-fichier--loader');
-
-        if (modale_fichier_loader !== null)
-            modale_fichier_loader.classList.remove('fr-hidden');
-
-        const fileInput = document.getElementById('upload-id') as HTMLInputElement;
-
-        if (!fileInput.files || fileInput.files.length === 0) {
-            console.error("Aucun fichier sélectionné.");
-            return;
-        }
-
-
-        const formData = new FormData();
-        Array.from(fileInput.files).forEach((file) => {
-            formData.append('upload', file); // 'upload' correspond au nom attendu par votre serveur
+        const boutons_suppr_fichier = [...document.getElementsByClassName('bouton-supprimer-fichier')];
+        boutons_suppr_fichier.forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const // 
+                    target = event.target,
+                    fichier_token = target && 'dataset' in target && (target.dataset as { token: string }).id;
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce document?'))
+                    axios.delete(`/${prefix}/envoi/supprimer-fichier/${fichier_token}`)
+                        .then((response) => {
+                            const { success, data } = response.data;
+                            if (success)
+                                location.reload();
+                        });
+            })
         });
 
-        try {
+        /**
+         * GESTION DE L'UPLOAD DE FICHIERS (fait avec Gemini)
+         */
 
-            axios.post(`/${prefix}/envoi/upload/${envoi_id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+        const uploadFiles = async (): Promise<void> => {
 
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
-                    console.log(`Progression : ${percentCompleted}%`);
-                },
-            })
-                .then((response) => {
-                    const { success, data } = response.data;
-                    if (success) {
-                        location.reload();
-                    }
-                });
+            const modale_fichier_loader = document.getElementById('modal-creer-fichier--loader');
 
-        } catch (error) {
-            console.error('Erreur lors de l\'envoi :', error);
-        }
-    };
+            if (modale_fichier_loader !== null)
+                modale_fichier_loader.classList.remove('fr-hidden');
 
-    const submitBtn = document.getElementById('modal-creer-fichier--submit');
-    submitBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        uploadFiles();
-    });
+            const fileInput = document.getElementById('upload-id') as HTMLInputElement;
 
-}
+            if (!fileInput.files || fileInput.files.length === 0) {
+                console.error("Aucun fichier sélectionné.");
+                return;
+            }
+
+
+            const formData = new FormData();
+            Array.from(fileInput.files).forEach((file) => {
+                formData.append('upload', file); // 'upload' correspond au nom attendu par votre serveur
+            });
+
+            try {
+
+                axios.post(`/${prefix}/envoi/upload/${envoi_id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+                        console.log(`Progression : ${percentCompleted}%`);
+                    },
+                })
+                    .then((response) => {
+                        const { success, data } = response.data;
+                        if (success) {
+                            location.reload();
+                        }
+                    });
+
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi :', error);
+            }
+        };
+
+        const submitBtn = document.getElementById('modal-creer-fichier--submit');
+        submitBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            uploadFiles();
+        });
+    }
+
+};

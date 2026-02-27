@@ -23,6 +23,13 @@
 
 	<main class="fr-mt-4w">
 
+	{{ form_start(form)}}
+
+		{# Si l'envoi est archivé, la Div ci-dessous occupera tout le contenu, empêchant toute action à part "Réactiver" #}
+		{% if envoi.archive == true %}
+			<div class="blocage-archives"></div>
+		{% endif %}
+
 		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
 		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
@@ -37,8 +44,6 @@
 			<dt>Date de création :</dt>
 			<dd class="bold fr-pl-0">{{ envoi.date|date('d/m/Y')}}</dd>
 		</dl>
-
-		{{ form_start(form)}}
 
 		<div class="fr-grid-row fr-grid-row--gutters">
 
@@ -122,9 +127,16 @@
 		</p>
 
 		<ul class="fr-btns-group fr-btns-group--inline fr-btns-group--lg fr-mt-4w">
-			<li>
-				<button id="archiver-button" disabled type="submit" class="fr-btn">Archiver</button>
-			</li>
+
+			{% if envoi.archive != true %}
+				<li>
+					<button id="archiver-button" disabled type="submit" class="fr-btn">Archiver</button>
+				</li>
+			{% else %}
+				<li>
+					<button id="archiver-button" type="submit" class="fr-btn">Réactiver</button>
+				</li>
+			{% endif %}
 		</ul>
 
 		{{ form_end(form)}}

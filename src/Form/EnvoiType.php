@@ -53,7 +53,7 @@ class EnvoiType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Envoi::class,
+            'data_class' => Envoi::class
         ]);
     }
 }

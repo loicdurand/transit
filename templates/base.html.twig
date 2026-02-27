@@ -108,6 +108,11 @@
 									Accueil
 								</a>
 							</li>
+							<li class="fr-nav__item">
+								<a class="fr-nav__link" aria-current="{{ app.request.pathinfo == '/archives' ? 'true' : 'false' }}" href="{{ path('transit_index_archives')}}" target="_self">
+									Archives
+								</a>
+							</li>
 						</ul>
 					</nav>
 				</div>
