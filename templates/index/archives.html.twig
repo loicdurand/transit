@@ -42,11 +42,16 @@
 
 			<ul>
 				{% for envoi in envois %}
-					<li class="fr-mb-2w relative">
-						<h4 class="fr-h6 fr-mr-2w inline">{{ envoi.titre }}</h4>
-						<a href="{{ path('transit_envoi',{ envoi: envoi.id }) }}" target="_self" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
-						{# <p id="badge_statut_libelle" class="inline fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p> #}
-
+					<li class="fr-mb-2w relative fr-grid-row">
+						<div class="fr-col-9">
+							<h4 class="fr-h6 fr-mr-2w inline">{{ envoi.titre}}</h4>
+							<a target="_self" href="{{ path('transit_envoi',{envoi: envoi.id})}}" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
+						</div>
+						<div class="gauge-container fr-col-3" title="Avancement: {{ envoi.percentage }}%">
+							<div class="gauge" style="width: {{ 100 - envoi.percentage }}%;">
+							</div>
+							{{ envoi.statut.libelle === 'Finalisé' ? '' : envoi.statut.libelle }}
+						</div>
 					</li>
 				{% endfor %}
 			</ul>
