@@ -29,7 +29,7 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $envois = $entityManager->getRepository(Envoi::class)->findAllUnfinalized();
+        $envois = $entityManager->getRepository(Envoi::class)->findAllNotArchived();
 
         return $this->render('index/index.html.twig', [
             'user' => $user,

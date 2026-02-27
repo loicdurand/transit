@@ -67,6 +67,12 @@ class Envoi
     #[ORM\OneToMany(targetEntity: Fichier::class, mappedBy: 'envoi', orphanRemoval: true, cascade: ['persist'])]
     private Collection $fichiers;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $archive = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $archivedAt = null;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -278,6 +284,32 @@ class Envoi
                 $fichier->setEnvoi(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isArchive(): ?bool
+    {
+        return $this->archive;
+    }
+
+    public function setArchive(?bool $archive): static
+    {
+        $this->archive = $archive;
+        $this->setArchivedAt();
+
+        return $this;
+    }
+
+    public function getArchivedAt(): ?\DateTime
+    {
+        return $this->archivedAt;
+    }
+
+    private function setArchivedAt(): static
+    {
+        $now = new \DateTime('now');
+        $this->archivedAt = $now;
 
         return $this;
     }

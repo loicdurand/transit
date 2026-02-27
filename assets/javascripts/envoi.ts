@@ -5,6 +5,7 @@ import axios from 'axios';
 const // 
     prefix = 'transit',
     list = document.getElementById('task-list'),
+    archiver_button = document.getElementById('archiver-button') as HTMLButtonElement,
     tasks = list?.children || [];
 
 // Les tâches doivent être marquées comme terminées l'une après l'autre.
@@ -14,6 +15,7 @@ function manage_taches_cliquables() {
 
     // On vire toutes les tâches précédemment marquées comme cliquables, pour éviter toute erreur.
     [...document.getElementsByClassName('cliquable')].forEach(task => task.classList.remove('cliquable'));
+    archiver_button.disabled = true;
 
     let prev_task;
     for (let task of tasks) {
@@ -30,6 +32,7 @@ function manage_taches_cliquables() {
     // Gestion du cas où toutes les tâches ont été faites
     if (list?.querySelector('.cliquable') === null) {
         tasks[tasks.length - 1]?.classList.add('cliquable');
+        archiver_button.disabled = false;
     }
 }
 
@@ -201,44 +204,37 @@ if (list !== null) {
         })
     });
 
-
     /**
      * GESTION DE L'UPLOAD DE FICHIERS (fait avec Gemini)
      */
 
     const uploadFiles = async (): Promise<void> => {
 
-        const modale_fichier_loader = document.getElementById('modal-creer-fichier--loader'),
+        const modale_fichier_loader = document.getElementById('modal-creer-fichier--loader');
 
-        if (modale_fichier_loader === null)
-            return;
+        if (modale_fichier_loader !== null)
+            modale_fichier_loader.classList.remove('fr-hidden');
 
-        modale_fichier_loader.classList.remove('fr-hidden');
-
-        // 1. Récupération de l'élément input via son ID
         const fileInput = document.getElementById('upload-id') as HTMLInputElement;
 
-        // Vérification de la présence de fichiers
         if (!fileInput.files || fileInput.files.length === 0) {
             console.error("Aucun fichier sélectionné.");
             return;
         }
 
-        // 2. Préparation des données avec FormData
-        const formData = new FormData();
 
-        // On boucle sur les fichiers (puisque l'attribut 'multiple' est présent)
+        const formData = new FormData();
         Array.from(fileInput.files).forEach((file) => {
             formData.append('upload', file); // 'upload' correspond au nom attendu par votre serveur
         });
 
         try {
-            // 3. Envoi de la requête avec Axios
+
             axios.post(`/${prefix}/envoi/upload/${envoi_id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-                // Optionnel : Suivre la progression de l'upload
+
                 onUploadProgress: (progressEvent) => {
                     const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
                     console.log(`Progression : ${percentCompleted}%`);
@@ -256,10 +252,9 @@ if (list !== null) {
         }
     };
 
-    // Exemple d'attachement à votre bouton
     const submitBtn = document.getElementById('modal-creer-fichier--submit');
     submitBtn?.addEventListener('click', (e) => {
-        e.preventDefault(); // Empêche le comportement par défaut du formulaire
+        e.preventDefault();
         uploadFiles();
     });
 

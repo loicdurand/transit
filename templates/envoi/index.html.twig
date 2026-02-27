@@ -104,8 +104,6 @@
 
 			{# FIN "Documents attachés" #}
 
-			{{ form_end(form)}}
-
 		</div>
 
 		<h4>Liste de tâches</h4>
@@ -122,6 +120,14 @@
 			</ul>
 
 		</p>
+
+		<ul class="fr-btns-group fr-btns-group--inline fr-btns-group--lg fr-mt-4w">
+			<li>
+				<button id="archiver-button" disabled type="submit" class="fr-btn">Archiver</button>
+			</li>
+		</ul>
+
+		{{ form_end(form)}}
 
 		{% include "components/modale_creer-numero.html.twig" %}
 		{% include "components/modale_uploader-fichier.html.twig" %}

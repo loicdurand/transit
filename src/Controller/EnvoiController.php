@@ -54,6 +54,14 @@ final class EnvoiController extends TransitController
         $numero->setEnvoi($envoi);
         $numero_form = $this->createForm(NumeroType::class, $numero);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $data = $form->getData();
+            $envoi->setArchive(true);
+            $entityManager->persist($envoi);
+            $entityManager->flush();
+            return $this->redirectToRoute('transit_index', []);
+        }
+
         return $this->render('envoi/index.html.twig', [
             'user' => $user,
             'envoi' => $envoi,

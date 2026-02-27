@@ -19,11 +19,15 @@ class EnvoiRepository extends ServiceEntityRepository
     /**
      * @return Envoi[] Returns an array of Envoi objects
      */
-    public function findAllUnfinalized(): array
+    public function findAllNotArchived(): array
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.statut != :val')
-            ->setParameter('val', 'finalisé')
+            // ->innerJoin('e.statut', 's')
+            // ->andWhere('s.libelle != :val')
+            // ->setParameter('val', 'Finalisé')
+            ->andWhere('e.archive IS NULL')
+            ->orWhere('e.archive != :val')
+            ->setParameter('val', true)
             ->orderBy('e.id', 'ASC')
             //    ->setMaxResults(10)
             ->getQuery()
