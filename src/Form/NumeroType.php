@@ -15,10 +15,10 @@ class NumeroType extends AbstractType
     {
         $builder
             ->add('libelle', null, [
-                'label' => 'Type de référence (ex: Fiche de transport)'
+                'label' => 'Type de référence (ex: Fiche de transport, Message, Réf colis, etc...)'
             ])
             ->add('valeur', null, [
-                'label' => 'Référence (ex: 01234/XXXX)',
+                'label' => 'Numéro attaché (ex: 01234/XXXX)',
                 'help_attr' => [
                     'content' => 'Seulement la référence, sans indiquer "N°..."'
                 ]
