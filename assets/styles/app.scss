@@ -19,10 +19,43 @@ main {
     flex: 1;
 
     .trst-bottom-0 {
-        bottom: 0;
+        bottom: -6px;
     }
 }
 
 footer.fr-footer {
     margin-top: auto !important;
+}
+
+// CRÉATION D'UNE JAUGE DEVANT LES ENVOIS À LA PAGE D'ACCUEIL
+
+$green: #1abc9c;
+$yellow: #f1c40f;
+$red: #c0392b;
+
+.gauge-container {
+    height: 1.5rem;
+    border-radius: 6px;
+    background: linear-gradient(to right, #c0392b 0%, #f1c40f 50%, #1abc9c 100%);
+    overflow: hidden;
+    position: absolute;
+    top: 1px;
+    right: 0;
+    z-index: 0;
+    padding-left: 6px;
+    font-size: .75rem;
+    color: #333;
+    // border: 1px solid var(--grey-7);
+
+    .gauge {
+        height: 30px;
+        // width: 30%; <!-- la partie vide de la jauge
+        background-color: #eee;
+        position: absolute;
+        right: 0;
+        transition: all .3s ease-in-out;
+        z-index: -1;
+
+    }
+
 }

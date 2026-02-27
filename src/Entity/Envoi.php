@@ -73,6 +73,8 @@ class Envoi
     #[ORM\Column(nullable: true)]
     private ?\DateTime $archivedAt = null;
 
+    private int $percents;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -213,19 +215,24 @@ class Envoi
 
     public function getPercentage(): int
     {
-        $percents = 0;
         $actions = $this->getActions();
         $statut = $this->getStatut();
+        if ($statut->getLibelle() === 'Finalisé') {
+            $this->percents = 100;
+            return $this->percents;
+        }
+
+        $this->percents = 0;
 
         foreach ($actions as $action) {
             $action_etape = $action->getEtape();
             $action_etape_statut = $action_etape->getStatutSiNegatif();
             if ($action_etape_statut === $statut) {
-                $percents = round($action->getRang() / count($actions) * 100);
+                $this->percents = round($action->getRang() / count($actions) * 100);
             }
         }
 
-        return $percents;
+        return $this->percents;
     }
 
     /**
