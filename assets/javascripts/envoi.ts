@@ -74,12 +74,12 @@ if (list !== null) {
             const target = document.getElementById(`envoi_completion_${field}`) as HTMLInputElement;
             target?.addEventListener('input', (event) => {
                 const value = target.value;
-                axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value })
-                    .then((response) => {
-                        const { success, data } = response.data;
-                        if (success)
-                            location.reload();
-                    });
+                axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value });
+                // .then((response) => {
+                //     const { success, data } = response.data;
+                //     if (success)
+                //         location.reload();
+                // });
             })
         })
 
