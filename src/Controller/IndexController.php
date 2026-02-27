@@ -14,6 +14,7 @@ use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
 use App\Entity\Etape;
+use App\Entity\Fichier;
 use App\Form\EnvoiType;
 use App\Form\DestinataireType;
 use App\Form\ObjetType;
@@ -34,6 +35,31 @@ final class IndexController extends TransitController
             'user' => $user,
             'envois' => $envois
         ]);
+    }
+
+    #[Route('/download/{fichier_token}', name: 'transit_index_download')]
+    public function download(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager, string $fichier_token): Response
+    {
+
+        if (is_null($user))
+            return $this->redirectToRoute('transit_login');
+
+        $fichier = $entityManager->getRepository(Fichier::class)->findOneBy([
+            'token' => $fichier_token
+        ]);
+        $nom = $fichier->getNom();
+        $chemin = $fichier->getChemin();
+        $filePath = $this->getParameter('kernel.project_dir') . '/assets/files/' . $chemin;
+        // Contrôle d'erreur si le fichier n'existe pas
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('Le fichier demandé n\'existe pas.');
+        }
+
+        $response = new Response();
+        $response->setContent(file_get_contents($filePath));
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $nom . '"');
+        return $response;
     }
 
     #[Route('/creer-envoi', name: 'transit_index_creerenvoi')]

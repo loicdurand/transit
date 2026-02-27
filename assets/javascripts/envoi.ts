@@ -190,9 +190,9 @@ if (list !== null) {
         btn.addEventListener('click', (event) => {
             const // 
                 target = event.target,
-                fichier_id = target && 'dataset' in target && (target.dataset as { id: string }).id;
+                fichier_token = target && 'dataset' in target && (target.dataset as { token: string }).id;
             if (confirm('Êtes-vous sûr de vouloir supprimer ce document?'))
-                axios.delete(`/${prefix}/envoi/supprimer-fichier/${fichier_id}`)
+                axios.delete(`/${prefix}/envoi/supprimer-fichier/${fichier_token}`)
                     .then((response) => {
                         const { success, data } = response.data;
                         if (success)

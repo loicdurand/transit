@@ -171,10 +171,12 @@ final class EnvoiController extends TransitController
         ]);
     }
 
-    #[Route('/envoi/supprimer-fichier/{fichier_id}', name: 'transit_envoi_supprimerfichier', methods: ['DELETE'])]
-    public function supprimerfichier(EntityManagerInterface $entityManager, string $fichier_id)
+    #[Route('/envoi/supprimer-fichier/{fichier_token}', name: 'transit_envoi_supprimerfichier', methods: ['DELETE'])]
+    public function supprimerfichier(EntityManagerInterface $entityManager, string $fichier_token)
     {
-        $fichier = $entityManager->getRepository(Fichier::class)->find($fichier_id);
+        $fichier = $entityManager->getRepository(Fichier::class)->findOneBy([
+            'token' => $fichier_token
+        ]);
         $path = $fichier->getChemin();
         $filePath = $this->getParameter('kernel.project_dir') . '/assets/files/' . $path;
         if (!file_exists($filePath)) {
@@ -207,6 +209,7 @@ final class EnvoiController extends TransitController
         $fichier = new Fichier();
         $fichier->setNom($originalFilename);
         $fichier->setChemin($newFilename);
+        $fichier->setToken(uniqid());
 
         $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
         $envoi->addFichier($fichier);
