@@ -13,12 +13,15 @@ class Fichier
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $chemin = null;
 
     #[ORM\ManyToOne(inversedBy: 'fichier')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Envoi $envoi = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
 
     public function getId(): ?int
     {
@@ -45,6 +48,18 @@ class Fichier
     public function setEnvoi(?Envoi $envoi): static
     {
         $this->envoi = $envoi;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
 
         return $this;
     }

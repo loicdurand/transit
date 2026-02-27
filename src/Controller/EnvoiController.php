@@ -160,10 +160,28 @@ final class EnvoiController extends TransitController
     }
 
     #[Route('/envoi/supprimer-numero/{numero_id}', name: 'transit_envoi_supprimernumero', methods: ['DELETE'])]
-    public function supprimer(EntityManagerInterface $entityManager, string $numero_id)
+    public function supprimernumero(EntityManagerInterface $entityManager, string $numero_id)
     {
         $numero = $entityManager->getRepository(Numero::class)->find($numero_id);
         $entityManager->remove($numero);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true
+        ]);
+    }
+
+    #[Route('/envoi/supprimer-fichier/{fichier_id}', name: 'transit_envoi_supprimerfichier', methods: ['DELETE'])]
+    public function supprimerfichier(EntityManagerInterface $entityManager, string $fichier_id)
+    {
+        $fichier = $entityManager->getRepository(Fichier::class)->find($fichier_id);
+        $path = $fichier->getChemin();
+        $filePath = $this->getParameter('kernel.project_dir') . '/assets/files/' . $path;
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('Le fichier demandé n\'existe pas.');
+        }
+        unlink($filePath);
+        $entityManager->remove($fichier);
         $entityManager->flush();
 
         return $this->json([
@@ -177,7 +195,7 @@ final class EnvoiController extends TransitController
 
         // L'utilisateur uploade ses fichiers via formulaire POST
         // On l'enregistre dans /assets/files/ avec un nom de fichier unique
-        $file = $this->request->files->get('file');
+        $file = $this->request->files->get('upload');
         $filePath = $this->getParameter('kernel.project_dir') . '/assets/files/';
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $newFilename = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
@@ -187,10 +205,11 @@ final class EnvoiController extends TransitController
             return $this->json(['success' => 'false', 'message' => 'Erreur lors de l\'upload du fichier.']);
         }
         $fichier = new Fichier();
+        $fichier->setNom($originalFilename);
         $fichier->setChemin($newFilename);
 
         $envoi = $entityManager->getRepository(Envoi::class)->find($envoi_id);
-        $envoi->setFichier($fichier);
+        $envoi->addFichier($fichier);
         $entityManager->persist($envoi);
         $entityManager->flush();
         return $this->json(['success' => true, 'filename' => $newFilename]);

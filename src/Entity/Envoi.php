@@ -64,14 +64,14 @@ class Envoi
     /**
      * @var Collection<int, Fichier>
      */
-    #[ORM\OneToMany(targetEntity: Fichier::class, mappedBy: 'envoi', orphanRemoval: true)]
-    private Collection $fichier;
+    #[ORM\OneToMany(targetEntity: Fichier::class, mappedBy: 'envoi', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $fichiers;
 
     public function __construct()
     {
         $this->actions = new ArrayCollection();
         $this->numeros = new ArrayCollection();
-        $this->fichier = new ArrayCollection();
+        $this->fichiers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -240,30 +240,30 @@ class Envoi
         return $this;
     }
 
-    public function removeNumero(Numero $numero): static
-    {
-        if ($this->numeros->removeElement($numero)) {
-            // set the owning side to null (unless already changed)
-            if ($numero->getEnvoi() === $this) {
-                $numero->setEnvoi(null);
-            }
-        }
+    // public function removeNumero(Numero $numero): static
+    // {
+    //     if ($this->numeros->removeElement($numero)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($numero->getEnvoi() === $this) {
+    //             $numero->setEnvoi(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Fichier>
      */
-    public function getFichier(): Collection
+    public function getFichiers(): Collection
     {
-        return $this->fichier;
+        return $this->fichiers;
     }
 
     public function addFichier(Fichier $fichier): static
     {
-        if (!$this->fichier->contains($fichier)) {
-            $this->fichier->add($fichier);
+        if (!$this->fichiers->contains($fichier)) {
+            $this->fichiers->add($fichier);
             $fichier->setEnvoi($this);
         }
 
@@ -272,7 +272,7 @@ class Envoi
 
     public function removeFichier(Fichier $fichier): static
     {
-        if ($this->fichier->removeElement($fichier)) {
+        if ($this->fichiers->removeElement($fichier)) {
             // set the owning side to null (unless already changed)
             if ($fichier->getEnvoi() === $this) {
                 $fichier->setEnvoi(null);

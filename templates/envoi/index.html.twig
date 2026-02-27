@@ -27,36 +27,16 @@
 
 		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
 
-		<div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+		<dl class="fr-mb-4w fr-pt-1w fr-pb-1w bg-grey">
+			<dt>Objet :</dt>
+			<dd class="bold fr-pl-0">{{ envoi.objet.libelle }}</dd>
 
-			<dl class="fr-col-6">
-				<dt>Objet</dt>
-				<dd class="bold">{{ envoi.objet.libelle }}</dd>
+			<dt>Destinataire :</dt>
+			<dd class="bold fr-pl-0">{{ envoi.destinataire.libelle }}</dd>
 
-				<dt>Destinataire</dt>
-				<dd class="bold">{{ envoi.destinataire.libelle }}</dd>
-
-				<dt>En date du</dt>
-				<dd class="bold">{{ envoi.date|date('d/m/Y')}}</dd>
-			</dl>
-
-			<div class="fr-col-6 fr-upload-group fr-mt-2w">
-				<div class="fr-grid-row fr-grid-row--gutters fr-mr-0 bg-grey">
-					<div class="fr-col-9">
-						<label class="fr-label" for="upload-id">
-							Ajout de documents
-							<span class="fr-hint-text">Format supporté: pdf. Plusieurs fichiers possibles.</span>
-						</label>
-						<input class="fr-upload" multiple aria-describedby="upload-id-messages" type="file" id="upload-id" name="upload">
-						<div class="fr-messages-group" id="upload-id-messages" aria-live="polite"></div>
-					</div>
-					<div class="fr-col-3">
-						<button type="button" class="fr-hidden fr-icon-upload-2-line" title="Sauvegarder sur le serveur"></button>
-					</div>
-				</div>
-
-			</div>
-		</div>
+			<dt>Date de création :</dt>
+			<dd class="bold fr-pl-0">{{ envoi.date|date('d/m/Y')}}</dd>
+		</dl>
 
 		{{ form_start(form)}}
 
@@ -76,7 +56,9 @@
 				{{ form_widget(form.quantite) }}
 			</div>
 
-			<div class="fr-col-12">
+			{# Autres références #}
+
+			<div class="fr-col-6">
 				<p class="fr-mb-0 fr-pl-3w relative">
 					<button id="modal-creer-numero--trigger" aria-controls="modal-creer-numero" data-fr-opened="false" type="button" title="Ajouter une référence" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter une référence</button>
 					Autres références:
@@ -96,6 +78,31 @@
 					{% endfor %}
 				</ul>
 			</div>
+
+			{# FIN "Autres références" #}
+
+			{# Documents attachés #}
+
+			<div class="fr-col-6">
+				<p class="fr-mb-0 fr-pl-3w relative">
+					<button id="modal-creer-fichier--trigger" aria-controls="modal-creer-fichier" data-fr-opened="false" type="button" title="Ajouter un document" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un document</button>
+					Documents attachés:
+				</p>
+				<ul class="fr-mb-3w">
+					{% for fichier in envoi.fichiers %}
+						<li class="fr-pl-3w relative bold list-style-type_none">
+							<button type="button" title="Supprimer cette référence" data-id="{{fichier.id}}" class="bouton-supprimer-fichier fr-btn fr-icon-subtract-line fr-btn--secondary fr-btn--sm cs-btn--xs fr-mr-2w" style="top: 12px;">Supprimer ce document</button>
+							<a download="true" href="{{ path('transit_index_download',{fichier_id: fichier.id}) }}" class="modal-creer-fichier--trigger fr-btn fr-btn--tertiary-no-outline fr-pl-0 fr-pr-0">
+								<span class="fr-link chemin">{{fichier.nom}}</span>
+							</a>
+						</li>
+					{% else %}
+						<li>Néant</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			{# FIN "Documents attachés" #}
 
 			{{ form_end(form)}}
 
@@ -117,6 +124,7 @@
 		</p>
 
 		{% include "components/modale_creer-numero.html.twig" %}
+		{% include "components/modale_uploader-fichier.html.twig" %}
 
 	</main>
 
