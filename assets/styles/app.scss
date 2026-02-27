@@ -35,16 +35,16 @@ $red: #c0392b;
 
 .gauge-container {
     height: 1.5rem;
-    border-radius: 6px;
+    border-radius: 3px;
     background: linear-gradient(to right, #c0392b 0%, #f1c40f 50%, #1abc9c 100%);
     overflow: hidden;
     position: absolute;
     top: 1px;
     right: 0;
     z-index: 0;
-    padding-left: 6px;
+    padding-left: 9px;
     font-size: .75rem;
-    color: #333;
+    // color: #333;
     // border: 1px solid var(--grey-7);
 
     .gauge {
