@@ -92,7 +92,7 @@
 					{% for fichier in envoi.fichiers %}
 						<li class="fr-pl-3w relative bold list-style-type_none">
 							<button type="button" title="Supprimer cette référence" data-id="{{fichier.token}}" class="bouton-supprimer-fichier fr-btn fr-icon-subtract-line fr-btn--secondary fr-btn--sm cs-btn--xs fr-mr-2w" style="top: 12px;">Supprimer ce document</button>
-							<a download="true" href="{{ path('transit_index_download',{fichier_token: fichier.token}) }}" class="modal-creer-fichier--trigger fr-btn fr-btn--tertiary-no-outline fr-pl-0 fr-pr-0">
+							<a download="true" href="{{ path('transit_index_download',{fichier_token: fichier.token}) }}" class="modal-creer-fichier--trigger fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-btn--icon-right fr-pl-0 fr-pr-0">
 								<span class="fr-link chemin">{{fichier.nom}}</span>
 							</a>
 						</li>
