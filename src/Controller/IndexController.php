@@ -13,6 +13,7 @@ use App\Entity\Action;
 use App\Entity\User;
 use App\Entity\Envoi;
 use App\Entity\StatutEnvoi;
+use App\Entity\DirectionEnvoi;
 use App\Entity\Etape;
 use App\Entity\Fichier;
 use App\Form\EnvoiType;
@@ -29,11 +30,21 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $envois = $entityManager->getRepository(Envoi::class)->findAllNotArchived();
+        $all = $entityManager->getRepository(Envoi::class)->findAllNotArchived();
+        $envois = [];
+        $receptions = [];
+        foreach ($all as $envoi) {
+            if ($envoi->getDirection()->getLibelle() === 'envoi') {
+                $envois[] = $envoi;
+            } else {
+                $receptions[] = $envoi;
+            }
+        }
 
         return $this->render('index/index.html.twig', [
             'user' => $user,
-            'envois' => $envois
+            'envois' => $envois,
+            'receptions' => $receptions
         ]);
     }
 
@@ -44,11 +55,21 @@ final class IndexController extends TransitController
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
-        $envois = $entityManager->getRepository(Envoi::class)->findBy(['archive' => true]);
+        $all = $entityManager->getRepository(Envoi::class)->findBy(['archive' => true]);
+        $envois = [];
+        $receptions = [];
+        foreach ($all as $envoi) {
+            if ($envoi->getDirection()->getLibelle() === 'envoi') {
+                $envois[] = $envoi;
+            } else {
+                $receptions[] = $envoi;
+            }
+        }
 
         return $this->render('index/archives.html.twig', [
             'user' => $user,
-            'envois' => $envois
+            'envois' => $envois,
+            'receptions' => $receptions
         ]);
     }
 
@@ -77,16 +98,18 @@ final class IndexController extends TransitController
         return $response;
     }
 
-    #[Route('/creer-envoi', name: 'transit_index_creerenvoi')]
-    public function creerenvoi(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager): Response
+    #[Route('/creer-{envoi_ou_reception}', name: 'transit_index_creerenvoi')]
+    public function creerenvoi(#[CurrentUser] ?User $user, EntityManagerInterface $entityManager, string $envoi_ou_reception): Response
     {
 
         if (is_null($user))
             return $this->redirectToRoute('transit_login');
 
+        $direction = $entityManager->getRepository(DirectionEnvoi::class)->findOneBy(['libelle' => $envoi_ou_reception]);
         $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $this->statut_initial_libelle]);
         $envoi = new Envoi();
         $envoi->setDate(new \Datetime('now'));
+        $envoi->setDirection($direction);
         $envoi->setStatut($statut_initial);
 
         $form = $this->createForm(EnvoiType::class, $envoi);
@@ -116,6 +139,7 @@ final class IndexController extends TransitController
         return $this->render('index/creer-envoi.html.twig', [
             'user' => $user,
             'form' => $form,
+            'envoi' => $envoi,
             'destinataire_form' => $this->createForm(DestinataireType::class),
             'objet_form' => $this->createForm(ObjetType::class)
         ]);

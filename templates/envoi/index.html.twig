@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion d'un envoi
+{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : 'une réception' %}
+
+{% block title %}Gestion d'{{direction}}
 {% endblock %}
 
 {% block body %}
@@ -14,7 +16,7 @@
 					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
 				</li>
 				<li>
-					<a class="fr-breadcrumb__link" aria-current="page">Gestion d'un envoi</a>
+					<a class="fr-breadcrumb__link" aria-current="page">Gestion d'{{direction}}</a>
 				</li>
 			</ol>
 		</div>
@@ -23,7 +25,7 @@
 
 	<main class="fr-mt-4w">
 
-	{{ form_start(form)}}
+		{{ form_start(form)}}
 
 		{# Si l'envoi est archivé, la Div ci-dessous occupera tout le contenu, empêchant toute action à part "Réactiver" #}
 		{% if envoi.archive == true %}
@@ -32,16 +34,19 @@
 
 		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
-		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
+		<h2>Gestion
+			{{ direction = envoi.direction.libelle == 'envoi' ? "de l'envoi " : "de la réception" }}&nbsp;{{ envoi.titre }}"</h2>
 
 		<dl class="fr-mb-4w fr-pt-1w fr-pb-1w bg-grey">
 			<dt>Objet :</dt>
 			<dd class="bold fr-pl-0">{{ envoi.objet.libelle }}</dd>
 
-			<dt>Destinataire :</dt>
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Destinataire' : 'Origine' }}
+				:</dt>
 			<dd class="bold fr-pl-0">{{ envoi.destinataire.libelle }}</dd>
 
-			<dt>Date de création :</dt>
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Date de création' : 'Date réception information' }}
+				:</dt>
 			<dd class="bold fr-pl-0">{{ envoi.date|date('d/m/Y')}}</dd>
 		</dl>
 

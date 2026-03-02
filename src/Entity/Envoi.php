@@ -75,6 +75,10 @@ class Envoi
 
     private int $percents;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DirectionEnvoi $direction = null;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -227,7 +231,7 @@ class Envoi
         foreach ($actions as $action) {
             $action_etape = $action->getEtape();
             $action_etape_statut = $action_etape->getStatutSiNegatif();
-            if ($action_etape_statut === $statut) {
+            if ($action_etape_statut->getId() === $statut->getId()) {
                 $this->percents = round($action->getRang() / count($actions) * 100);
             }
         }
@@ -317,6 +321,18 @@ class Envoi
     {
         $now = new \DateTime('now');
         $this->archivedAt = $now;
+
+        return $this;
+    }
+
+    public function getDirection(): ?DirectionEnvoi
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?DirectionEnvoi $direction): static
+    {
+        $this->direction = $direction;
 
         return $this;
     }

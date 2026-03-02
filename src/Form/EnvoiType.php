@@ -17,12 +17,16 @@ class EnvoiType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $envoi = $options['data'];
         $builder
             ->add('titre')
             // ->add('reference')
-            ->add('date')
+            ->add('date', null, [
+                'label' => $envoi->getDirection()->getLibelle() === 'envoi' ? 'Date' : 'Date réception information',
+            ])
             // ->add('quantite')
             ->add('destinataire', EntityType::class, [
+                'label' => $envoi->getDirection() === 'envoi' ? 'Destinataire' : 'Origine',
                 'class' => Destinataire::class,
                 'choice_label' => 'libelle',
                 'query_builder' => function (EntityRepository $er) {

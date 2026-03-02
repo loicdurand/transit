@@ -24,6 +24,10 @@ class Objet
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'objet')]
     private Collection $actions;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?DirectionEnvoi $direction = null;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -72,6 +76,18 @@ class Objet
                 $action->setObjet(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDirection(): ?DirectionEnvoi
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?DirectionEnvoi $direction): static
+    {
+        $this->direction = $direction;
 
         return $this;
     }
