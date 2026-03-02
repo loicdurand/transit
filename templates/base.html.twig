@@ -12,15 +12,18 @@
 		</title>
 
 		{# FAVICON #}
-		{# <link
-												rel="apple-touch-icon" href="{{ asset('favicons/apple-touch-icon.png') }}"> #}
+		<link
+		rel="apple-touch-icon" href="{{ asset('favicons/apple-touch-icon.png') }}">
 
 		<!-- 180×180 -->
-		<link rel="icon" href="{{ asset('favicons/truck-line.svg') }}" type="image/svg+xml"> {# <link
-																	rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" type="image/x-icon"> #}
+		<link rel="icon" href="{{ asset('favicons/favicon.svg') }}" type="image/svg+xml">
+		<link
+		rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" type="image/x-icon">
 
 		<!-- 32×32 -->
-		<link rel="manifest" href="{{ asset('favicons/manifest.webmanifest') }}" crossorigin="use-credentials"> {% block stylesheets %}
+		<link rel="manifest" href="{{ asset('favicons/site.webmanifest') }}" crossorigin="use-credentials">
+
+		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
@@ -120,11 +123,11 @@
 		</header>
 
 		{# BODY #}
-		<div class="fr-container fr-mt-2w"> {% block body %}{% endblock %}
+		<div class="fr-container fr-mt-2w fr-mb-4w"> {% block body %}{% endblock %}
 			</div>
 
 			{# FOOTER #}
-			<footer class="fr-footer fr-mt-4w" role="contentinfo" id="footer">
+			<footer class="fr-footer" role="contentinfo" id="footer">
 				<div class="fr-container">
 					<div class="fr-footer__body">
 						<div class="fr-footer__brand fr-enlarge-link">
@@ -155,25 +158,7 @@
 							</p>
 						</div>
 					</div>
-					<div
-						class="fr-footer__bottom">
-						{# <ul class="fr-footer__bottom-list">
-																																																																																																																																																																																																	<li class="fr-footer__bottom-item">
-																																																																																																																																																																																																		<a id="footer__bottom-link-4" href="#" class="fr-footer__bottom-link">Plan du site</a>
-																																																																																																																																																																																																	</li>
-																																																																																																																																																																																																	<li class="fr-footer__bottom-item">
-																																																																																																																																																																																																		<a id="footer__bottom-link-5" href="#" class="fr-footer__bottom-link">Accessibilité : partiellement conforme</a>
-																																																																																																																																																																																																	</li>
-																																																																																																																																																																																																	<li class="fr-footer__bottom-item">
-																																																																																																																																																																																																		<a id="footer__bottom-link-6" href="#" class="fr-footer__bottom-link">Mentions légales</a>
-																																																																																																																																																																																																	</li>
-																																																																																																																																																																																																	<li class="fr-footer__bottom-item">
-																																																																																																																																																																																																		<a id="footer__bottom-link-7" href="#" class="fr-footer__bottom-link">Données personnelles</a>
-																																																																																																																																																																																																	</li>
-																																																																																																																																																																																																	<li class="fr-footer__bottom-item">
-																																																																																																																																																																																																		<a id="footer__bottom-link-8" href="#" class="fr-footer__bottom-link">Gestion des cookies</a>
-																																																																																																																																																																																																	</li>
-																																																																																																																																																																																																</ul> #}
+					<div class="fr-footer__bottom">
 						<div class="fr-footer__bottom-copy">
 							<p>Sauf mention explicite de propriété intellectuelle détenue par des tiers, les contenus de ce site sont proposés sous
 								<a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank" rel="noopener external" title="Licence etalab - nouvelle fenêtre">licence etalab-2.0</a>

@@ -22,15 +22,15 @@
 	{# Fin fil d'arianne #}
 
 	{# <h2 class="fr-h6">Actions rapides</h2>
-
-	<ul class="fr-btns-group fr-btns-group--inline fr-grid-row fr-grid-row--gutters">
-		<li class="fr-col-6">
-			<a href="{{ path('transit_index_creerenvoi') }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer un envoi</a>
-		</li>
-		<li class="fr-col-6">
-			<button disabled type="button" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer une réception</button>
-		</li>
-	</ul> #}
+		
+			<ul class="fr-btns-group fr-btns-group--inline fr-grid-row fr-grid-row--gutters">
+				<li class="fr-col-6">
+					<a href="{{ path('transit_index_creerenvoi') }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer un envoi</a>
+				</li>
+				<li class="fr-col-6">
+					<button disabled type="button" class="fr-btn fr-btn--secondary margin-auto fr-p-4w fr-col-10">Créer une réception</button>
+				</li>
+			</ul> #}
 
 	<main class="fr-mt-4w">
 
@@ -48,8 +48,7 @@
 							<a target="_self" href="{{ path('transit_envoi',{envoi: envoi.id})}}" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
 						</div>
 						<div class="gauge-container fr-col-3" title="Avancement: {{ envoi.percentage }}%">
-							<div class="gauge" style="width: {{ 100 - envoi.percentage }}%;">
-							</div>
+							<div class="gauge" style="width: {{ 100 - envoi.percentage }}%;"></div>
 							{{ envoi.statut.libelle === 'Finalisé' ? '' : envoi.statut.libelle }}
 						</div>
 					</li>

@@ -196,7 +196,7 @@ export default function () {
             btn.addEventListener('click', (event) => {
                 const // 
                     target = event.target,
-                    fichier_token = target && 'dataset' in target && (target.dataset as { token: string }).id;
+                    fichier_token = target && 'dataset' in target && (target.dataset as { token: string });
                 if (confirm('Êtes-vous sûr de vouloir supprimer ce document?'))
                     axios.delete(`/${prefix}/envoi/supprimer-fichier/${fichier_token}`)
                         .then((response) => {
