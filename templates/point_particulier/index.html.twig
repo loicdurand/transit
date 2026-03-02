@@ -26,11 +26,11 @@
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="3">no records found</td>
+					<td colspan="3">Aucun enregistrement trouvé</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 
-	<a href="{{ path('transit_point_particulier_new') }}">Create new</a>
+	<a href="{{ path('transit_point_particulier_new',{envoi:envoi}) }}">Create new</a>
 {% endblock %}

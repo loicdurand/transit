@@ -117,7 +117,7 @@
 			{% if envoi.direction.libelle == 'reception' %}
 				<div class="fr-col-12">
 					<p class="fr-mb-0 fr-pl-3w relative">
-						<a target="_self" href="{{ path('transit_point_particulier_new') }}" title="Ajouter un article manquant, en instance ou détérioré" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un article manquant, en instance ou détérioré</a>
+						<a target="_self" href="{{ path('transit_point_particulier_new',{envoi: envoi.id}) }}" title="Ajouter un article manquant, en instance ou détérioré" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un article manquant, en instance ou détérioré</a>
 						Points particuliers:
 					</p>
 

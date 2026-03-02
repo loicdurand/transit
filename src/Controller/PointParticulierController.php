@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use App\Entity\Envoi;
+
 #[Route('/point/particulier')]
 final class PointParticulierController extends AbstractController
 {
@@ -22,23 +24,28 @@ final class PointParticulierController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'transit_point_particulier_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{envoi}', name: 'transit_point_particulier_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, string $envoi): Response
     {
         $pointParticulier = new PointParticulier();
         $form = $this->createForm(PointParticulierType::class, $pointParticulier);
         $form->handleRequest($request);
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pointParticulier->setEnvoi($envoi);
             $entityManager->persist($pointParticulier);
             $entityManager->flush();
 
-            return $this->redirectToRoute('transit_point_particulier_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('transit_envoi', [
+                'envoi' => $envoi->getId()
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('point_particulier/new.html.twig', [
             'point_particulier' => $pointParticulier,
             'form' => $form,
+            'envoi' => $envoi->getId()
         ]);
     }
 

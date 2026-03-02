@@ -37,7 +37,6 @@ class PointParticulierType extends AbstractType
             ])
             ->add('quantite', null, [
                 'attr' => [
-                    'value' => 1,
                     'min' => 1
                 ]
             ])
