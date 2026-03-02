@@ -68,17 +68,17 @@ class Objet
         return $this;
     }
 
-    public function removeAction(Action $action): static
-    {
-        if ($this->actions->removeElement($action)) {
-            // set the owning side to null (unless already changed)
-            if ($action->getObjet() === $this) {
-                $action->setObjet(null);
-            }
-        }
+    // public function removeAction(Action $action): static
+    // {
+    //     if ($this->actions->removeElement($action)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($action->getObjet() === $this) {
+    //             $action->setObjet(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getDirection(): ?DirectionEnvoi
     {
