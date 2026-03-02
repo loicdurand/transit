@@ -12,6 +12,7 @@ use App\Entity\Etape;
 use App\Entity\Action;
 use App\Entity\Destinataire;
 use App\Entity\Objet;
+use App\Entity\StatutPointParticulier;
 
 class AppFixtures extends Fixture
 {
@@ -64,10 +65,11 @@ class AppFixtures extends Fixture
             'reception' => null
         ];
         foreach (['envoi', 'reception'] as $libelle) {
-            $directions[$libelle] = new DirectionEnvoi();
-            $directions[$libelle]->setLibelle($libelle);
-            $manager->persist($directions[$libelle]);
+            $direction = new DirectionEnvoi();
+            $direction->setLibelle($libelle);
+            $manager->persist($direction);
             $manager->flush();
+            $directions[$libelle] = $direction;
         }
 
         // INSERTION DES OBJETS (Envoi MCO, Barge SXM, ETC...)
@@ -203,6 +205,15 @@ class AppFixtures extends Fixture
                 $rang++;
             }
 
+            $manager->flush();
+        }
+
+        // INSERTION DES STATUTS DE POINTS PARTICULIERS
+
+        foreach (['Article manquant', 'Article en instance', 'Cassé'] as $libelle) {
+            $statut = new StatutPointParticulier();
+            $statut->setLibelle($libelle);
+            $manager->persist($statut);
             $manager->flush();
         }
     }
