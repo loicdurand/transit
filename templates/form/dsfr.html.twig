@@ -17,7 +17,7 @@
         {%- set required = false -%}
     {%- endif -%}
 
-    <input type="{{ type }}" {{ block('widget_attributes') }} class="fr-input" {% if value is not empty %}value="{{ value }}" {% endif %}/><br/>
+    <input type="{{ type }}" {{ block('widget_attributes') }} class="fr-input fr-mb-2w" {% if value is not empty %}value="{{ value }}" {% endif %}/>
 {%- endblock form_widget_simple -%}
 
 {%- block form_widget_compound -%}
@@ -28,7 +28,6 @@
         {{- block('form_rows') -}}
         {{- form_rest(form) -}}
     </div>
-    <br>
 {%- endblock form_widget_compound -%}
 
 {% block form_errors %}
@@ -47,12 +46,10 @@
 
 {%- block checkbox_widget -%}
     <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-	<br>
 {%- endblock checkbox_widget -%}
 
 {%- block radio_widget -%}
     <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-	<br>
 {%- endblock radio_widget -%}
 
 {# SELECT #}
@@ -66,7 +63,7 @@
 {%- endblock choice_widget -%}
 
 {%- block choice_widget_expanded -%}
-    <div {{ block('widget_container_attributes') }}>
+    <div class="fr-mb-2w" {{ block('widget_container_attributes') }}>
     {%- for child in form %}
         {{- form_widget(child) -}}
     {% endfor -%}
@@ -97,7 +94,6 @@
         {%- set render_preferred_choices = false -%}
         {{- block('choice_widget_options') -}}
     </select>
-	<br>
 {%- endblock choice_widget_collapsed -%}
 
 {%- block choice_widget_options -%}
@@ -157,7 +153,7 @@
               {% set help_attr = help_attr|merge({'for': id, 'class': (help_attr.class|default('fr-hint-text'))|trim}) %}
               <{{ element|default('span') }} {% if help_attr %}{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
                 {{ help_attr.content }}
-              </{{ element|default('span') }}
+              </{{ element|default('span') }}>
             {%- endif -%}
         </{{ element|default('label') }}>
     {%- endif -%}
@@ -208,7 +204,7 @@
         {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
     {%- endif -%}
     {% if row_attr -%}
-        {% set row_attr = row_attr|merge({'class': (row_attr.class|default('') ~ ('fr-select-group' in row_attr.class ? ' fr-select-group': ' fr-input-group'))|trim}) %}
+        {% set row_attr = row_attr|merge({'class': (row_attr.class|default('') ~ ' fr-mb-2w' ~ ('fr-select-group' in row_attr.class ? ' fr-select-group': ' fr-input-group'))|trim}) %}
     {%- endif -%}
     <div
 		{% with {attr: row_attr} %}
@@ -218,5 +214,4 @@
         {{- form_label(form) -}}
         {{- form_widget(form, widget_attr) -}}
     </div>
-	<br>
 {%- endblock form_row -%}
