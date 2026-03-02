@@ -12,7 +12,7 @@ const prefix = '/transit';
 
 const router = new Router(prefix);
 
-router.on('/creer-envoi', async () => {
+router.on('/creer-:envoi_ou_reception', async () => {
     const envoi = await import('./javascripts/creer-envoi.ts');
     envoi.default();
 
@@ -33,7 +33,7 @@ router.on('/envoi', async () => {
     console.log('envoi.ts');
 });
 
-router.dispatch();
+// router.dispatch();
 
 document.addEventListener('turbo:load', () => {
     router.dispatch();

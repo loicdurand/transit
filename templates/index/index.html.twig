@@ -22,10 +22,10 @@
 
 	<ul class="fr-btns-group fr-btns-group--inline fr-grid-row fr-grid-row--gutters">
 		<li class="fr-col-6">
-			<a href="{{ path('transit_index_creerenvoi') }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-1w fr-col-10">Créer un envoi</a>
+			<a href="{{ path('transit_index_creerenvoi',{envoi_ou_reception: 'envoi'}) }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-1w fr-col-10">Créer un envoi</a>
 		</li>
 		<li class="fr-col-6">
-			<button disabled type="button" class="fr-btn fr-btn--secondary margin-auto fr-p-1w fr-col-10">Créer une réception</button>
+			<a href="{{ path('transit_index_creerenvoi',{envoi_ou_reception: 'reception'}) }}" target="_self" class="fr-btn fr-btn--secondary margin-auto fr-p-1w fr-col-10">Créer une réception</a>
 		</li>
 	</ul>
 
@@ -45,8 +45,7 @@
 							<a target="_self" href="{{ path('transit_envoi',{envoi: envoi.id})}}" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ envoi.reference is not null ? envoi.reference: 'Aucune référence saisie' }}</a>
 						</div>
 						<div class="gauge-container fr-col-3" title="Avancement: {{ envoi.percentage }}%">
-							<div class="gauge" style="width: {{ 100 - envoi.percentage }}%;">
-							</div>
+							<div class="gauge" style="width: {{ 100 - envoi.percentage }}%;"></div>
 							{{ envoi.statut.libelle }}
 						</div>
 					</li>
@@ -61,7 +60,28 @@
 
 		<h3 class="underline">Réception:</h3>
 
-		<p>Vous n'avez encore aucun dossier en cours...</p>
+		{% if receptions | length %}
+
+			<ul>
+				{% for reception in receptions %}
+					<li class="fr-mb-2w relative fr-grid-row">
+						<div class="fr-col-9">
+							<h4 class="fr-h6 fr-mr-2w inline">{{ reception.titre}}</h4>
+							<a target="_self" href="{{ path('transit_envoi',{envoi: reception.id})}}" class="fr-btn fr-btn--tertiary absolute trst-bottom-0">{{ reception.reference is not null ? reception.reference: 'Aucune référence saisie' }}</a>
+						</div>
+						<div class="gauge-container fr-col-3" title="Avancement: {{ reception.percentage }}%">
+							<div class="gauge" style="width: {{ 100 - reception.percentage }}%;"></div>
+							{{ reception.statut.libelle }}
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+
+		{% else %}
+
+			<p>Vous n'avez encore aucun dossier en cours...</p>
+
+		{% endif %}
 
 		<h3 class="underline">Matériel en instance:</h3>
 

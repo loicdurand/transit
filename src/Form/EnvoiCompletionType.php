@@ -17,12 +17,13 @@ class EnvoiCompletionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $envoi = $options['data'];
         $builder
             // ->add('titre')
             ->add('reference', null, [
-                'label' => 'Référence principale',
+                'label' => $envoi->getDirection()->getLibelle() === 'envoi' ? 'Référence principale' : 'N° fiche de transport SCRTA',
                 'attr' => [
-                    'placeholder' => 'ex: Réforme N°X/20XX'
+                    'placeholder' => $envoi->getDirection()->getLibelle() === 'envoi' ? 'ex: Réforme N°X/20XX' : 'ex: 2601-01234'
                 ]
             ])
             // ->add('date')

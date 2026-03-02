@@ -21,6 +21,7 @@ export default function () {
 
         let prev_task;
         for (let task of tasks) {
+
             if (task.classList.contains('checked')) {
                 task.classList.remove('cliquable');
                 prev_task = task;

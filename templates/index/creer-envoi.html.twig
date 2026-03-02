@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer un envoi
+{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : 'une réception' %}
+
+{% block title %}Créer
+	{{ direction }}
 {% endblock %}
 
 {% block body %}
+
 	{# Fil d'arianne #}
 	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
 		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">
@@ -16,7 +20,8 @@
 					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
 				</li>
 				<li>
-					<a class="fr-breadcrumb__link" aria-current="page">Créer un envoi</a>
+					<a class="fr-breadcrumb__link" aria-current="page">Créer
+						{{ direction }}</a>
 				</li>
 			</ol>
 		</div>
@@ -25,7 +30,8 @@
 
 	<main>
 
-		<h2>Créer un envoi</h2>
+		<h2>Créer
+			{{ direction }}</h2>
 
 		{{ form_start(form) }}
 

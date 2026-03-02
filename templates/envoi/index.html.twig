@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion d'un envoi
+{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : 'une réception' %}
+
+{% block title %}Gestion d'{{direction}}
 {% endblock %}
 
 {% block body %}
@@ -14,7 +16,7 @@
 					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
 				</li>
 				<li>
-					<a class="fr-breadcrumb__link" aria-current="page">Gestion d'un envoi</a>
+					<a class="fr-breadcrumb__link" aria-current="page">Gestion d'{{direction}}</a>
 				</li>
 			</ol>
 		</div>
@@ -23,7 +25,7 @@
 
 	<main class="fr-mt-4w">
 
-	{{ form_start(form)}}
+		{{ form_start(form)}}
 
 		{# Si l'envoi est archivé, la Div ci-dessous occupera tout le contenu, empêchant toute action à part "Réactiver" #}
 		{% if envoi.archive == true %}
@@ -32,16 +34,19 @@
 
 		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
-		<h2>Gestion de l'envoi "{{ envoi.titre }}"</h2>
+		<h2>Gestion
+			{{ direction = envoi.direction.libelle == 'envoi' ? "de l'envoi " : "de la réception" }}&nbsp;{{ envoi.titre }}"</h2>
 
 		<dl class="fr-mb-4w fr-pt-1w fr-pb-1w bg-grey">
 			<dt>Objet :</dt>
 			<dd class="bold fr-pl-0">{{ envoi.objet.libelle }}</dd>
 
-			<dt>Destinataire :</dt>
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Destinataire' : 'Origine' }}
+				:</dt>
 			<dd class="bold fr-pl-0">{{ envoi.destinataire.libelle }}</dd>
 
-			<dt>Date de création :</dt>
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Date de création' : 'Date réception information' }}
+				:</dt>
 			<dd class="bold fr-pl-0">{{ envoi.date|date('d/m/Y')}}</dd>
 		</dl>
 
@@ -108,6 +113,100 @@
 			</div>
 
 			{# FIN "Documents attachés" #}
+
+			{% if envoi.direction.libelle == 'reception' %}
+				<div class="fr-col-12">
+					<p class="fr-mb-0 fr-pl-3w relative">
+						<a target="_self" href="{{ path('transit_point_particulier_new') }}" title="Ajouter un article manquant, en instance ou détérioré" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un article manquant, en instance ou détérioré</a>
+						Points particuliers:
+					</p>
+
+					{% if envoi.pointsParticuliers | length == 0 %}
+						<ul class="fr-mb-3w">
+							<li>Néant</li>
+						</ul>
+					{% else %}
+
+						<div class="fr-table fr-table--bordered">
+							<div class="fr-table__wrapper">
+								<div class="fr-table__container">
+									<div class="fr-table__content">
+										<table>
+											<thead>
+												<tr>
+													<th></th>
+													<th>
+														Code MCA
+													</th>
+													<th>
+														Quantité
+													</th>
+													<th>
+														Actions
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% set pluriels = ['Articles manquants', 'Articles en instances','Cassés'] %}
+												{% set manquant = [] %}
+												{% set en_instance = [] %}
+												{% set casses = [] %}
+												{% for point_particulier in envoi.pointsParticuliers %}
+
+													{% if point_particulier.statut.libelle == 'Article manquant'  %}
+														{% set manquant = manquant|merge([point_particulier]) %}
+													{% elseif point_particulier.statut.libelle == 'Article en instance' %}
+														{% set en_instance = en_instance|merge([point_particulier]) %}
+													{% else %}
+														{% set casses = casses|merge([point_particulier]) %}
+													{% endif %}
+												{% endfor %}
+
+												{% set statuts = [manquant,en_instance,casses] %}
+
+												{% for i, statut in statuts %}
+													{% for j, point_particulier in statut %}
+														<tr>
+															{% if j == 0 %}
+																<td rowspan="{{ statut | length }}">
+																	{% if statut | length > 1 %}
+																		{{ pluriels[i] }}
+																	{% else %}
+																		{{point_particulier.statut.libelle }}
+																	{% endif %}
+																</td>
+															{% endif %}
+
+															<td title="{{ point_particulier.article.libelle }}">
+																{{ point_particulier.article.MCA }}
+															</td>
+															<td>
+																{{ point_particulier.quantite }}
+															</td>
+															<td>
+																<ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
+																	<li>
+																		<a class="fr-btn fr-btn--tertiary-no-outline fr-mb-0" href="{{ path('transit_point_particulier_edit', {'id': point_particulier.id}) }}">Modifier</a>
+																	</li>
+																	<li>
+																		{{ include('point_particulier/_delete_form.html.twig') }}
+																	</li>
+																</ul>
+															</td>
+														</tr>
+													{% endfor %}
+												{% endfor %}
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					{% endif %}
+				</div>
+			{% endif %}
 
 		</div>
 

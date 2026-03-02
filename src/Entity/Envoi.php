@@ -75,11 +75,22 @@ class Envoi
 
     private int $percents;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DirectionEnvoi $direction = null;
+
+    /**
+     * @var Collection<int, PointParticulier>
+     */
+    #[ORM\OneToMany(targetEntity: PointParticulier::class, mappedBy: 'envoi', orphanRemoval: true)]
+    private Collection $points_particuliers;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
         $this->numeros = new ArrayCollection();
         $this->fichiers = new ArrayCollection();
+        $this->points_particuliers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,7 +238,7 @@ class Envoi
         foreach ($actions as $action) {
             $action_etape = $action->getEtape();
             $action_etape_statut = $action_etape->getStatutSiNegatif();
-            if ($action_etape_statut === $statut) {
+            if ($action_etape_statut->getId() === $statut->getId()) {
                 $this->percents = round($action->getRang() / count($actions) * 100);
             }
         }
@@ -317,6 +328,48 @@ class Envoi
     {
         $now = new \DateTime('now');
         $this->archivedAt = $now;
+
+        return $this;
+    }
+
+    public function getDirection(): ?DirectionEnvoi
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?DirectionEnvoi $direction): static
+    {
+        $this->direction = $direction;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PointParticulier>
+     */
+    public function getPointsParticuliers(): Collection
+    {
+        return $this->points_particuliers;
+    }
+
+    public function addPointsParticulier(PointParticulier $pointsParticulier): static
+    {
+        if (!$this->points_particuliers->contains($pointsParticulier)) {
+            $this->points_particuliers->add($pointsParticulier);
+            $pointsParticulier->setEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removePointsParticulier(PointParticulier $pointsParticulier): static
+    {
+        if ($this->points_particuliers->removeElement($pointsParticulier)) {
+            // set the owning side to null (unless already changed)
+            if ($pointsParticulier->getEnvoi() === $this) {
+                $pointsParticulier->setEnvoi(null);
+            }
+        }
 
         return $this;
     }

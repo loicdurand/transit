@@ -1,0 +1,4 @@
+<form class="inline" method="post" action="{{ path('transit_point_particulier_delete', {'id': point_particulier.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ces articles?');">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ point_particulier.id) }}">
+	<button class="fr-btn fr-btn--tertiary-no-outline fr-mb-0">Supprimer</button>
+</form>

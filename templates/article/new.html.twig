@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un article
+{% endblock %}
+
+{% block body %}
+	<h1>Créer un article</h1>
+
+	{{ include('article/_form.html.twig') }}
+
+	<a target="_self" class="fr-link fr-icon-arrow-left-line fr-link--icon-left fr-mt-4w" href="{{ path('transit_envoi',{envoi: envoi}) }}">Retour</a>
+
+{% endblock %}

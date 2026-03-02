@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PointParticulier index
+{% endblock %}
+
+{% block body %}
+	<h1>PointParticulier index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Quantite</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for point_particulier in point_particuliers %}
+				<tr>
+					<td>{{ point_particulier.id }}</td>
+					<td>{{ point_particulier.quantite }}</td>
+					<td>
+						<a href="{{ path('transit_point_particulier_show', {'id': point_particulier.id}) }}">show</a>
+						<a href="{{ path('transit_point_particulier_edit', {'id': point_particulier.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('transit_point_particulier_new') }}">Create new</a>
+{% endblock %}

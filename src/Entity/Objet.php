@@ -24,6 +24,10 @@ class Objet
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'objet')]
     private Collection $actions;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?DirectionEnvoi $direction = null;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -64,14 +68,26 @@ class Objet
         return $this;
     }
 
-    public function removeAction(Action $action): static
+    // public function removeAction(Action $action): static
+    // {
+    //     if ($this->actions->removeElement($action)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($action->getObjet() === $this) {
+    //             $action->setObjet(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
+
+    public function getDirection(): ?DirectionEnvoi
     {
-        if ($this->actions->removeElement($action)) {
-            // set the owning side to null (unless already changed)
-            if ($action->getObjet() === $this) {
-                $action->setObjet(null);
-            }
-        }
+        return $this->direction;
+    }
+
+    public function setDirection(?DirectionEnvoi $direction): static
+    {
+        $this->direction = $direction;
 
         return $this;
     }
