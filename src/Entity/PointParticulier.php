@@ -24,6 +24,10 @@ class PointParticulier
     #[ORM\Column]
     private ?int $quantite = null;
 
+    #[ORM\ManyToOne(inversedBy: 'points_particuliers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Envoi $envoi = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,18 @@ class PointParticulier
     public function setQuantite(int $quantite): static
     {
         $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getEnvoi(): ?Envoi
+    {
+        return $this->envoi;
+    }
+
+    public function setEnvoi(?Envoi $envoi): static
+    {
+        $this->envoi = $envoi;
 
         return $this;
     }

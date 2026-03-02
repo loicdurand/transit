@@ -79,11 +79,18 @@ class Envoi
     #[ORM\JoinColumn(nullable: false)]
     private ?DirectionEnvoi $direction = null;
 
+    /**
+     * @var Collection<int, PointParticulier>
+     */
+    #[ORM\OneToMany(targetEntity: PointParticulier::class, mappedBy: 'envoi', orphanRemoval: true)]
+    private Collection $points_particuliers;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
         $this->numeros = new ArrayCollection();
         $this->fichiers = new ArrayCollection();
+        $this->points_particuliers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -333,6 +340,36 @@ class Envoi
     public function setDirection(?DirectionEnvoi $direction): static
     {
         $this->direction = $direction;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PointParticulier>
+     */
+    public function getPointsParticuliers(): Collection
+    {
+        return $this->points_particuliers;
+    }
+
+    public function addPointsParticulier(PointParticulier $pointsParticulier): static
+    {
+        if (!$this->points_particuliers->contains($pointsParticulier)) {
+            $this->points_particuliers->add($pointsParticulier);
+            $pointsParticulier->setEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removePointsParticulier(PointParticulier $pointsParticulier): static
+    {
+        if ($this->points_particuliers->removeElement($pointsParticulier)) {
+            // set the owning side to null (unless already changed)
+            if ($pointsParticulier->getEnvoi() === $this) {
+                $pointsParticulier->setEnvoi(null);
+            }
+        }
 
         return $this;
     }
