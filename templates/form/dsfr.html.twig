@@ -16,8 +16,8 @@
         {# Attribute "required" is not supported #}
         {%- set required = false -%}
     {%- endif -%}
-    <input type="{{ type }}" {{ block('widget_attributes') }} class="fr-input" {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    
+
+    <input type="{{ type }}" {{ block('widget_attributes') }} class="fr-input" {% if value is not empty %}value="{{ value }}" {% endif %}/><br/>
 {%- endblock form_widget_simple -%}
 
 {%- block form_widget_compound -%}
@@ -28,6 +28,7 @@
         {{- block('form_rows') -}}
         {{- form_rest(form) -}}
     </div>
+    <br>
 {%- endblock form_widget_compound -%}
 
 {% block form_errors %}
@@ -46,10 +47,12 @@
 
 {%- block checkbox_widget -%}
     <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+	<br>
 {%- endblock checkbox_widget -%}
 
 {%- block radio_widget -%}
     <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+	<br>
 {%- endblock radio_widget -%}
 
 {# SELECT #}
@@ -94,6 +97,7 @@
         {%- set render_preferred_choices = false -%}
         {{- block('choice_widget_options') -}}
     </select>
+	<br>
 {%- endblock choice_widget_collapsed -%}
 
 {%- block choice_widget_options -%}
@@ -206,8 +210,13 @@
     {% if row_attr -%}
         {% set row_attr = row_attr|merge({'class': (row_attr.class|default('') ~ ('fr-select-group' in row_attr.class ? ' fr-select-group': ' fr-input-group'))|trim}) %}
     {%- endif -%}
-    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %} >
+    <div
+		{% with {attr: row_attr} %}
+		{{ block('attributes') }}
+		{% endwith %}
+		>
         {{- form_label(form) -}}
         {{- form_widget(form, widget_attr) -}}
     </div>
+	<br>
 {%- endblock form_row -%}
