@@ -27,10 +27,11 @@ final class PointParticulierController extends AbstractController
     #[Route('/new/{envoi}', name: 'transit_point_particulier_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, string $envoi): Response
     {
+        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi);
         $pointParticulier = new PointParticulier();
+        $pointParticulier->setEnvoi($envoi);
         $form = $this->createForm(PointParticulierType::class, $pointParticulier);
         $form->handleRequest($request);
-        $envoi = $entityManager->getRepository(Envoi::class)->find($envoi);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pointParticulier->setEnvoi($envoi);
