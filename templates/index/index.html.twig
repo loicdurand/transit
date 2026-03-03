@@ -83,7 +83,7 @@
 
 		{% endif %}
 
-		<h3 class="underline">Matériel en instance:</h3>
+		<h3 class="underline fr-mb-5w">Matériel en instance:</h3>
 
 		{% if MIs | length %}
 
@@ -109,9 +109,9 @@
 									{% for point in pointsParticuliers %}
 
 										<li class="fr-mb-2w relative fr-grid-row">
-											<div class="fr-col-9">
+											<div class="fr-col-12">
 												<h5 class="fr-h6 fr-mr-2w inline">
-													Qté:
+													&#9679;&nbsp;Qté:
 													{{point.quantite}}
 													-
 													{{point.article.MCA}}
@@ -120,9 +120,9 @@
 												</h5>
 											</div>
 											{# <div class="gauge-container fr-col-3" title="Avancement: {{ mi.percentage }}%">
-																																																																																																																																																																																																																																																																																																																																																																																																																																																								<div class="gauge" style="width: {{ 100 - mi.percentage }}%;"></div>
-																																																																																																																																																																																																																																																																																																																																																																																																																																																								{{ mi.statut.libelle }}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																							</div> #}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										<div class="gauge" style="width: {{ 100 - mi.percentage }}%;"></div>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										{{ mi.statut.libelle }}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									</div> #}
 										</li>
 
 									{% endfor %}
