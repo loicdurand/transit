@@ -33,18 +33,26 @@ final class IndexController extends TransitController
         $all = $entityManager->getRepository(Envoi::class)->findAllNotArchived();
         $envois = [];
         $receptions = [];
+        $MIs = []; // MI: Matériel en Instance
         foreach ($all as $envoi) {
             if ($envoi->getDirection()->getLibelle() === 'envoi') {
                 $envois[] = $envoi;
-            } else {
+            } else if ($envoi->getDirection()->getLibelle() === 'reception') {
                 $receptions[] = $envoi;
+                $points_particuliers = $envoi->getPointsParticuliers();
+                if (count($points_particuliers) > 0) {
+                    $MIs[] = $envoi;
+                }
+            } else {
+                $MIs[] = $envoi;
             }
         }
 
         return $this->render('index/index.html.twig', [
             'user' => $user,
             'envois' => $envois,
-            'receptions' => $receptions
+            'receptions' => $receptions,
+            'MIs' => $MIs
         ]);
     }
 

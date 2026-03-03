@@ -85,9 +85,61 @@
 
 		<h3 class="underline">Matériel en instance:</h3>
 
-		<p>Vous n'avez encore aucun dossier en cours...</p>
+		{% if MIs | length %}
+
+			<ul>
+				{% for mi in MIs %}
+					{% set pointsParticuliers = mi.pointsParticuliers | filter(point=> point.statut.libelle === 'Article en instance')%}
+					{% if pointsParticuliers | length %}
+						<li class="fr-mb-2w relative fr-grid-row">
+							<section class="instance-ctnr w100 fr-p-4v fr-mb-4w">
+								<h4 class="fr-h6 relative inline-block w100">
+									<span class="fr-pl-1w fr-pr-1w">
+										{% if mi.titre != '' %}
+											{{ mi.titre }}
+										{% else %}
+											M.I.
+										{% endif %}
+									</span>
+									<a target="_self" href="{{ path('transit_envoi',{envoi: mi.id})}}" class="inline fr-btn fr-btn--tertiary absolute trst-bottom-4 fr-ml-2w">{{ mi.reference is not null ? mi.reference: 'Aucune référence saisie' }}</a>
+
+								</h4>
+								<ul class="fr-pt-2w">
+
+									{% for point in pointsParticuliers %}
+
+										<li class="fr-mb-2w relative fr-grid-row">
+											<div class="fr-col-9">
+												<h5 class="fr-h6 fr-mr-2w inline">
+													Qté:
+													{{point.quantite}}
+													-
+													{{point.article.MCA}}
+													-
+													{{point.article.libelle}}
+												</h5>
+											</div>
+											{# <div class="gauge-container fr-col-3" title="Avancement: {{ mi.percentage }}%">
+																																																																																																																																																																																																																																																																																																																																																																																																																																																								<div class="gauge" style="width: {{ 100 - mi.percentage }}%;"></div>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																								{{ mi.statut.libelle }}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																							</div> #}
+										</li>
+
+									{% endfor %}
+
+								</ul>
+							</section>
+						{% endif %}
+					{% endfor %}
+				</ul>
+
+			{% else %}
+
+				<p>Vous n'avez encore aucun dossier en cours...</p>
+
+			{% endif %}
 
 
-	</main>
+		</main>
 
-{% endblock %}
+	{% endblock %}
