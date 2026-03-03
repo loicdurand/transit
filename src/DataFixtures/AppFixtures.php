@@ -62,7 +62,8 @@ class AppFixtures extends Fixture
         // INSERTION DES DIRECTIONS (envoi, reception)
         $directions = [
             'envoi' => null,
-            'reception' => null
+            'reception' => null,
+            'en instance' => null
         ];
         foreach (['envoi', 'reception'] as $libelle) {
             $direction = new DirectionEnvoi();
