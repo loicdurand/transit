@@ -119,11 +119,20 @@ final class IndexController extends TransitController
         $envoi->setDate(new \Datetime('now'));
         $envoi->setDirection($direction);
         $envoi->setStatut($statut_initial);
+        $objet_en_instance = $entityManager->getRepository(Objet::class)->findOneBy(['libelle' => $this->objet_materiel_en_instance]);
+
+        if ($envoi_ou_reception === 'en instance') {
+            $envoi->setTitre('__MI__' . uniqid());
+            $envoi->setObjet($objet_en_instance);
+        }
 
         $form = $this->createForm(EnvoiType::class, $envoi);
 
         $form->handleRequest($this->request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($envoi_ou_reception === 'en instance')
+                $envoi->setObjet($objet_en_instance);
 
             $entityManager->persist($envoi);
             $entityManager->flush();

@@ -77,12 +77,14 @@ class AppFixtures extends Fixture
 
         $envoi_MCO = new Objet();
         $reception_SCRTA = new Objet();
+        $en_instance = new Objet();
 
         $objets = [
             ['Autre', null],
             ['Envoi MCO', $directions['envoi']],
             ['Barge SXM', $directions['envoi']],
-            ['Réception SCRTA', $directions['reception']]
+            ['Réception SCRTA', $directions['reception']],
+            ['Matériel en instance', $directions['en instance']]
         ];
 
         foreach ($objets as [$libelle, $direction]) {
@@ -95,6 +97,8 @@ class AppFixtures extends Fixture
                 $envoi_MCO = $entity;
             } else if ($libelle === 'Réception SCRTA') {
                 $reception_SCRTA = $entity;
+            } else if ($libelle === 'Matériel en instance') {
+                $en_instance = $entity;
             }
         }
 
@@ -178,6 +182,10 @@ class AppFixtures extends Fixture
                     'Signature?',
                     'Signature'
                 ]
+            ],
+            $en_instance->getId() => [
+                'Matériel reçu?',
+                'En attente réception'
             ]
         ];
 

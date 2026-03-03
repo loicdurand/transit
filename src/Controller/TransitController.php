@@ -13,6 +13,7 @@ class TransitController extends AbstractController
     public $request;
     public $statut_initial_libelle = 'Initial';
     public $statut_final_libelle = 'Finalisé';
+    public $objet_materiel_en_instance = 'Matériel en instance';
 
     public function __construct()
     {

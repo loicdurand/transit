@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : 'une réception' %}
+{% set direction = envoi.direction.libelle == 'envoi' ? 
+	'un envoi' : envoi.direction.libelle == 'reception'? 
+		'une réception' : 'un matériel en instance' 
+%}
 
 {% block title %}Gestion d'{{direction}}
 {% endblock %}
@@ -35,7 +38,15 @@
 		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
 
 		<h2>Gestion
-			{{ direction = envoi.direction.libelle == 'envoi' ? "de l'envoi " : "de la réception" }}&nbsp;{{ envoi.titre }}"</h2>
+			{{ 
+				envoi.direction.libelle == 'envoi' ?
+					"de l'envoi " : envoi.direction.libelle == 'reception'? 
+						"de la réception" : "d'un matériel en instance"
+				 }}
+			{% if envoi.direction.libelle != 'en instance' %}
+				"{{ envoi.titre }}"
+			{% endif %}
+		</h2>
 
 		<dl class="fr-mb-4w fr-pt-1w fr-pb-1w bg-grey">
 			<dt>Objet :</dt>
@@ -114,7 +125,7 @@
 
 			{# FIN "Documents attachés" #}
 
-			{% if envoi.direction.libelle == 'reception' %}
+			{% if envoi.direction.libelle in ['reception','en instance'] %}
 				<div class="fr-col-12">
 					<p class="fr-mb-0 fr-pl-3w relative">
 						<a target="_self" href="{{ path('transit_point_particulier_new',{envoi: envoi.id}) }}" title="Ajouter un article manquant, en instance ou détérioré" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un article manquant, en instance ou détérioré</a>
