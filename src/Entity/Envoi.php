@@ -22,7 +22,7 @@ class Envoi
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 25, unique: true)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $titre = null;
 
     #[ORM\Column(length: 50, nullable: true)]

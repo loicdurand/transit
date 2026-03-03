@@ -21,7 +21,7 @@ class EnvoiCompletionType extends AbstractType
         $builder
             // ->add('titre')
             ->add('reference', null, [
-                'label' => $envoi->getDirection()->getLibelle() === 'envoi' ? 'Référence principale' : 'N° fiche de transport SCRTA',
+                'label' => 'Référence principale', // $envoi->getDirection()->getLibelle() === 'envoi' ? 'Référence principale' : 'N° fiche de transport SCRTA',
                 'attr' => [
                     'placeholder' => $envoi->getDirection()->getLibelle() === 'envoi' ? 'ex: Réforme N°X/20XX' : 'ex: 2601-01234'
                 ]
