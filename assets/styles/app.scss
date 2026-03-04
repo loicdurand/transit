@@ -21,6 +21,10 @@ main {
     .trst-bottom-0 {
         bottom: -6px;
     }
+
+    .trst-bottom-4 {
+        bottom: -4px;
+    }
 }
 
 footer.fr-footer {
@@ -60,4 +64,32 @@ $red: #c0392b;
 
 ul.list-style-type-none li {
     list-style-type: none;
+}
+
+// MATÉRIEL EN INSTANCE
+
+section.instance-ctnr {
+    margin: 0;
+    border: 1px solid var(--border-default-grey);
+    position: relative;
+
+    & h4 {
+        position: absolute;
+        top: -15px;
+        left: 1rem;
+        padding: 0 0.5rem;
+
+        & span,
+        & a {
+            background-color: var(--background-default-grey);
+        }
+
+        &+ul li {
+            list-style-type: circle;
+        }
+    }
+
+    & h5 {
+        font-weight: normal !important;
+    }
 }

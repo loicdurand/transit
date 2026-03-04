@@ -15,22 +15,22 @@ class PointParticulierType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $point = $options['data'];
+        $envoi = $point->getEnvoi();
+        if ($envoi->getDirection()->getLibelle() !== 'en instance') {
+            $builder
+                ->add('envoi', EntityType::class, [
+                    'class' => Envoi::class,
+                    'choice_label' => 'titre',
+                    'disabled' => true,
+                ])
+                ->add('statut', EntityType::class, [
+                    'class' => StatutPointParticulier::class,
+                    'choice_label' => 'libelle',
+                ]);
+        }
         $builder
-            ->add('envoi', EntityType::class, [
-                'class' => Envoi::class,
-                'choice_label' => 'titre',
-                'disabled' => true,
-                // 'attr' => [
-                //     'class' => 'fr-hidden'
-                // ],
-                // 'label_attr' => [
-                //     'class' => 'fr-hidden'
-                // ]
-            ])
-            ->add('statut', EntityType::class, [
-                'class' => StatutPointParticulier::class,
-                'choice_label' => 'libelle',
-            ])
+
             ->add('article', EntityType::class, [
                 'class' => Article::class,
                 'choice_label' => 'MCA',

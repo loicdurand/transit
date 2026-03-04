@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : 'une réception' %}
+{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : envoi.direction.libelle == 'reception' ? 'une réception' : 'un matériel en instance' %}
 
 {% block title %}Créer
 	{{ direction }}
