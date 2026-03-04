@@ -1,0 +1,50 @@
+.todo-list:empty {
+    content: "";
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    min-height: 5em;
+
+    &:after {
+        content: "Vos étapes apparaîtront ici une fois ajoutées...";
+        text-align: center;
+        display: block;
+        height: 5em;
+        padding: 2em;
+        font-size: 1.5em;
+    }
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    margin-bottom: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    cursor: grab;
+}
+
+.todo-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #007bff;
+}
+
+.drag-handle {
+    margin-right: 15px;
+    color: #888;
+    cursor: grab;
+}
+
+.edit-text,
+.edit-status {
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 5px;
+    text-align: center;
+}
+
+.edit-text:focus,
+.edit-status:focus {
+    border-bottom: 1px solid #007bff;
+    outline: none;
+}

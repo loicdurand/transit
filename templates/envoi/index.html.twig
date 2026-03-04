@@ -1,0 +1,259 @@
+{% extends 'base.html.twig' %}
+
+{% set direction = envoi.direction.libelle == 'envoi' ? 
+	'un envoi' : envoi.direction.libelle == 'reception'? 
+		'une réception' : 'un matériel en instance' 
+%}
+
+{% block title %}Gestion d'{{direction}}
+{% endblock %}
+
+{% block body %}
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">Voir le fil d&#39;arianne</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page">Gestion d'{{direction}}</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	<main class="fr-mt-4w">
+
+		{{ form_start(form)}}
+
+		{# Si l'envoi est archivé, la Div ci-dessous occupera tout le contenu, empêchant toute action à part "Réactiver" #}
+		{% if envoi.archive == true %}
+			<div class="blocage-archives"></div>
+		{% endif %}
+
+		<p id="badge_statut_libelle" class="fr-badge fr-badge--info fr-mb-2w">{{ envoi.statut.libelle }}</p>
+
+		<h2>Gestion
+			{{ 
+				envoi.direction.libelle == 'envoi' ?
+					"de l'envoi " : envoi.direction.libelle == 'reception'? 
+						"de la réception" : "d'un matériel en instance"
+				 }}
+			{% if envoi.direction.libelle != 'en instance' %}
+				"{{ envoi.titre }}"
+			{% endif %}
+		</h2>
+
+		<dl class="fr-mb-4w fr-pt-1w fr-pb-1w bg-grey">
+			<dt>Objet :</dt>
+			<dd class="bold fr-pl-0">{{ envoi.objet.libelle }}</dd>
+
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Destinataire' : 'Origine' }}
+				:</dt>
+			<dd class="bold fr-pl-0">{{ envoi.destinataire.libelle }}</dd>
+
+			<dt>{{ direction = envoi.direction.libelle == 'envoi' ? 'Date de création' : 'Date réception information' }}
+				:</dt>
+			<dd class="bold fr-pl-0">{{ envoi.date|date('d/m/Y')}}</dd>
+		</dl>
+
+		<div class="fr-grid-row fr-grid-row--gutters">
+
+			<h3 class="underline fr-col-5">
+				{{ form_label(form.reference) }}
+				{{ form_widget(form.reference) }}
+			</h3>
+
+			<div class="fr-col-5">
+				{{ form_label(form.type) }}
+				{{ form_widget(form.type) }}
+			</div>
+			<div class="fr-col-2">
+				{{ form_label(form.quantite) }}
+				{{ form_widget(form.quantite) }}
+			</div>
+
+			{# Autres références #}
+
+			<div class="fr-col-6">
+				<p class="fr-mb-0 fr-pl-3w relative">
+					<button id="modal-creer-numero--trigger" aria-controls="modal-creer-numero" data-fr-opened="false" type="button" title="Ajouter une référence" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter une référence</button>
+					Autres références:
+				</p>
+				<ul class="fr-mb-3w">
+					{% for numero in envoi.numeros %}
+						<li class="fr-pl-3w relative bold list-style-type_none">
+							<button type="button" title="Supprimer cette référence" data-id="{{numero.id}}" class="bouton-supprimer-numero fr-btn fr-icon-subtract-line fr-btn--secondary fr-btn--sm cs-btn--xs fr-mr-2w" style="top: 12px;">Supprimer cette référence</button>
+							<span class="libelle">{{numero.libelle}}</span>
+							n°
+							<button type="button" data-id="{{numero.id}}" data-libelle="{{numero.libelle}}" data-valeur="{{numero.valeur}}" class="modal-creer-numero--trigger fr-btn fr-btn--tertiary-no-outline fr-pl-0 fr-pr-0">
+								<span class="fr-link valeur">{{numero.valeur}}</span>
+							</button>
+						</li>
+					{% else %}
+						<li>Néant</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			{# FIN "Autres références" #}
+
+			{# Documents attachés #}
+
+			<div class="fr-col-6">
+				<p class="fr-mb-0 fr-pl-3w relative">
+					<button id="modal-creer-fichier--trigger" aria-controls="modal-creer-fichier" data-fr-opened="false" type="button" title="Ajouter un document" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un document</button>
+					Documents attachés:
+				</p>
+				<ul class="fr-mb-3w">
+					{% for fichier in envoi.fichiers %}
+						<li class="fr-pl-3w relative bold list-style-type_none">
+							<button type="button" title="Supprimer cette référence" data-id="{{fichier.token}}" class="bouton-supprimer-fichier fr-btn fr-icon-subtract-line fr-btn--secondary fr-btn--sm cs-btn--xs fr-mr-2w" style="top: 12px;">Supprimer ce document</button>
+							<a download="true" href="{{ path('transit_index_download',{fichier_token: fichier.token}) }}" class="modal-creer-fichier--trigger fr-btn fr-btn--tertiary-no-outline fr-icon-download-line fr-btn--icon-right fr-pl-0 fr-pr-0">
+								<span class="fr-link chemin">{{fichier.nom}}</span>
+							</a>
+						</li>
+					{% else %}
+						<li>Néant</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			{# FIN "Documents attachés" #}
+
+			{% if envoi.direction.libelle in ['reception','en instance'] %}
+				<div class="fr-col-12">
+					<p class="fr-mb-0 fr-pl-3w relative">
+						<a target="_self" href="{{ path('transit_point_particulier_new',{envoi: envoi.id}) }}" title="Ajouter un article manquant, en instance ou détérioré" class="fr-btn fr-icon-add-line fr-btn--secondary fr-btn--sm cs-btn--xs">Ajouter un article manquant, en instance ou détérioré</a>
+						Points particuliers:
+					</p>
+
+					{% if envoi.pointsParticuliers | length == 0 %}
+						<ul class="fr-mb-3w">
+							<li>Néant</li>
+						</ul>
+					{% else %}
+
+						<div class="fr-table fr-table--bordered">
+							<div class="fr-table__wrapper">
+								<div class="fr-table__container">
+									<div class="fr-table__content">
+										<table>
+											<thead>
+												<tr>
+													<th></th>
+													<th>
+														Code MCA
+													</th>
+													<th>
+														Quantité
+													</th>
+													<th>
+														Actions
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% set pluriels = ['Articles manquants', 'Articles en instances','Cassés'] %}
+												{% set manquant = [] %}
+												{% set en_instance = [] %}
+												{% set casses = [] %}
+												{% for point_particulier in envoi.pointsParticuliers %}
+
+													{% if point_particulier.statut.libelle == 'Article manquant'  %}
+														{% set manquant = manquant|merge([point_particulier]) %}
+													{% elseif point_particulier.statut.libelle == 'Article en instance' %}
+														{% set en_instance = en_instance|merge([point_particulier]) %}
+													{% else %}
+														{% set casses = casses|merge([point_particulier]) %}
+													{% endif %}
+												{% endfor %}
+
+												{% set statuts = [manquant,en_instance,casses] %}
+
+												{% for i, statut in statuts %}
+													{% for j, point_particulier in statut %}
+														<tr>
+															{% if j == 0 %}
+																<td rowspan="{{ statut | length }}">
+																	{% if statut | length > 1 %}
+																		{{ pluriels[i] }}
+																	{% else %}
+																		{{point_particulier.statut.libelle }}
+																	{% endif %}
+																</td>
+															{% endif %}
+
+															<td title="{{ point_particulier.article.libelle }}">
+																{{ point_particulier.article.MCA }}
+															</td>
+															<td>
+																{{ point_particulier.quantite }}
+															</td>
+															<td>
+																<ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
+																	<li>
+																		<a class="fr-btn fr-btn--tertiary-no-outline fr-mb-0" href="{{ path('transit_point_particulier_edit', {'id': point_particulier.id}) }}">Modifier</a>
+																	</li>
+																	<li>
+																		{{ include('point_particulier/_delete_form.html.twig') }}
+																	</li>
+																</ul>
+															</td>
+														</tr>
+													{% endfor %}
+												{% endfor %}
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					{% endif %}
+				</div>
+			{% endif %}
+
+		</div>
+
+		<h4>Liste de tâches</h4>
+
+		<p>
+
+			Pour modifier la liste de taches ci-dessous,
+			<a href="{{ path('transit_index_initobjet',{envoi: envoi.id}) }}">cliquez ici</a>.
+
+			<ul data-envoi="{{ envoi.id }}" id="task-list" class="task-list">
+				{% for action in envoi.actions %}
+					<li data-action="{{ action.id}}" {% if action.resultat %} class="checked" {% endif %}>{{ action.etape.libelle }}</li>
+				{% endfor %}
+			</ul>
+
+		</p>
+
+		<ul class="fr-btns-group fr-btns-group--inline fr-btns-group--lg fr-mt-4w">
+
+			{% if envoi.archive != true %}
+				<li>
+					<button id="archiver-button" disabled type="submit" class="fr-btn">Archiver</button>
+				</li>
+			{% else %}
+				<li>
+					<button id="archiver-button" type="submit" class="fr-btn">Réactiver</button>
+				</li>
+			{% endif %}
+		</ul>
+
+		{{ form_end(form)}}
+
+		{% include "components/modale_creer-numero.html.twig" %}
+		{% include "components/modale_uploader-fichier.html.twig" %}
+
+	</main>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un point particulier
+{% endblock %}
+
+{% block body %}
+	<h2>Créer un point particulier</h2>
+
+	<p>Pour ajouter un article,
+		<a target="_self" class="fr-link" href="{{ path('transit_article_new',{envoi: envoi }) }}">cliquez ici</a>.
+	</p>
+
+	<div class="fr-mb-4w">
+		{{ include('point_particulier/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+	</div>
+
+	<a href="{{ path('transit_envoi',{envoi:envoi}) }}">Retour</a>
+{% endblock %}

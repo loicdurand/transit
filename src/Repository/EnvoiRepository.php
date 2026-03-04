@@ -16,20 +16,24 @@ class EnvoiRepository extends ServiceEntityRepository
         parent::__construct($registry, Envoi::class);
     }
 
-    //    /**
-    //     * @return Envoi[] Returns an array of Envoi objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Envoi[] Returns an array of Envoi objects
+     */
+    public function findAllNotArchived(): array
+    {
+        return $this->createQueryBuilder('e')
+            // ->innerJoin('e.statut', 's')
+            // ->andWhere('s.libelle != :val')
+            // ->setParameter('val', 'Finalisé')
+            ->andWhere('e.archive IS NULL')
+            ->orWhere('e.archive != :val')
+            ->setParameter('val', true)
+            ->orderBy('e.id', 'ASC')
+            //    ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     //    public function findOneBySomeField($value): ?Envoi
     //    {

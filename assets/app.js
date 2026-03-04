@@ -1,10 +1,40 @@
 import './stimulus_bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
-import './styles/app.css';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+import '@gouvfr/dsfr/dist/dsfr.css';
+import "@gouvfr/dsfr/dist/utility/icons/icons.main.min.css";
+import './styles/app.scss';
+
+// JAVASCRIPTS
+import "@gouvfr/dsfr/dist/dsfr/dsfr.module";
+import Router from '@bleckert/router';
+
+const prefix = '/transit';
+
+const router = new Router(prefix);
+
+router.on('/creer-:envoi_ou_reception', async () => {
+    const envoi = await import('./javascripts/creer-envoi.ts');
+    envoi.default();
+
+    console.log('creer-envoi.ts');
+});
+
+router.on('/init-objet', async () => {
+    const envoi = await import('./javascripts/init-objet.ts');
+    envoi.default();
+
+    console.log('init-objet.ts');
+});
+
+router.on('/envoi', async () => {
+    const envoi = await import('./javascripts/envoi.ts');
+    envoi.default();
+
+    console.log('envoi.ts');
+});
+
+// router.dispatch();
+
+document.addEventListener('turbo:load', () => {
+    router.dispatch();
+});

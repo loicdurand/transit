@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% set direction = envoi.direction.libelle == 'envoi' ? 'un envoi' : envoi.direction.libelle == 'reception' ? 'une réception' : 'un matériel en instance' %}
+
+{% block title %}Créer
+	{{ direction }}
+{% endblock %}
+
+{% block body %}
+
+	{# Fil d'arianne #}
+	<nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+		<button type="button" class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb">
+			Voir le fil d&#39;arianne
+		</button>
+
+		<div class="fr-collapse" id="breadcrumb">
+			<ol class="fr-breadcrumb__list">
+				<li>
+					<a class="fr-breadcrumb__link" href="{{ path('transit_index') }}">Page d'accueil</a>
+				</li>
+				<li>
+					<a class="fr-breadcrumb__link" aria-current="page">Créer
+						{{ direction }}</a>
+				</li>
+			</ol>
+		</div>
+	</nav>
+	{# Fin fil d'arianne #}
+
+	<main>
+
+		<h2>Créer
+			{{ direction }}</h2>
+
+		{{ form_start(form) }}
+
+		{{ form_label(form.titre) }}
+		{{ form_widget(form.titre) }}
+		{{ form_errors(form.titre)}}
+
+		{{ form_label(form.date) }}
+		{{ form_widget(form.date) }}
+
+		{{ form_label(form.destinataire) }}
+		{{ form_widget(form.destinataire) }}
+
+		{{ form_label(form.objet) }}
+		{{ form_widget(form.objet) }}
+
+		<button type="submit" class="fr-btn fr-mt-4w">Étape suivante</button>
+
+		<button id="modal-creer-destinataire--trigger" aria-controls="modal-creer-destinataire" data-fr-opened="false" type="button" class="fr-btn fr-hidden">Ouvrir la modale</button>
+		<button id="modal-creer-objet--trigger" aria-controls="modal-creer-objet" data-fr-opened="false" type="button" class="fr-btn fr-hidden">Ouvrir la modale</button>
+
+		{{ form_end(form) }}
+
+
+	</main>
+
+	{% include "components/modale_creer-destinataire.html.twig" %}
+	{% include "components/modale_creer-objet.html.twig" %}
+
+
+{% endblock %}

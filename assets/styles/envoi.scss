@@ -1,0 +1,100 @@
+.cs-btn--xs {
+	position: absolute;
+	left: 0;
+	top: 3px;
+	padding: 0 !important;
+	width: 1rem;
+	height: 1rem;
+	min-height: 1rem !important;
+}
+
+ul.task-list {
+	margin: 0;
+	padding: 0;
+
+
+	/* Style the list items */
+	li {
+		// cursor: pointer;
+		position: relative;
+		padding: 12px 8px 12px 40px;
+		background: #eee;
+		font-size: 18px;
+		transition: 0.2s;
+		list-style-type: none;
+
+		/* make the list items unselectable */
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	/* Set all odd list items to a different color (zebra-stripes) */
+	li:nth-child(odd) {
+		background: #f9f9f9;
+	}
+
+	/* Darker background-color on hover */
+	li.cliquable:hover {
+		cursor: pointer;
+		color: var(--background-contrast-info);
+		background-color: var(--text-default-info);
+	}
+
+	/* When clicked on, add a background color and strike out text */
+	li.checked {
+		background: #888;
+		color: #fff;
+		text-decoration: line-through;
+	}
+
+	/* Add a "checked" mark when clicked on */
+	li.cliquable.checked::before {
+		content: '';
+		position: absolute;
+		border-color: #fff;
+		border-style: solid;
+		border-width: 0 2px 2px 0;
+		top: 10px;
+		left: 16px;
+		transform: rotate(45deg);
+		height: 15px;
+		width: 7px;
+	}
+
+}
+
+.bg-grey {
+	background: var(--background-contrast-grey);
+	border-radius: 6px;
+}
+
+.padding-0 {
+	padding: 0 !important;
+}
+
+dt,
+dd {
+	display: inline-block;
+}
+
+dd {
+	margin-right: 2rem;
+}
+
+form {
+	position: relative;
+
+	.blocage-archives {
+		width: calc(100% + 2rem);
+		height: calc(100% - 4rem);
+		display: block;
+		position: absolute;
+		background-color: rgba(22, 22, 22, 0.032);
+		border-radius: 6px;
+		left: -1rem;
+		top: -1rem;
+		z-index: 1;
+	}
+}

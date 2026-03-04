@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Édition d'un point particulier
+{% endblock %}
+
+{% block body %}
+	<h2>Édition d'un point particulier</h2>
+
+	<p>Pour ajouter un article,
+		<a target="_self" class="fr-link" href="{{ path('transit_article_new', {envoi: point_particulier.envoi.id} ) }}">cliquez ici</a>.
+	</p>
+	<p>Pour modifier ou supprimer un article existant,
+		<a target="_self" class="fr-link" href="{{ path('transit_article_index', {envoi: point_particulier.envoi.id} ) }}">c'est par ici</a>.
+	</p>
+
+	<div class="fr-mb-4w">
+		{{ include('point_particulier/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+	</div>
+
+	<a target="_self" class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{{ path('transit_envoi', {envoi: point_particulier.envoi.id}) }}">Retour</a>
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PointParticulier
+{% endblock %}
+
+{% block body %}
+	<h1>PointParticulier</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ point_particulier.id }}</td>
+			</tr>
+			<tr>
+				<th>Quantite</th>
+				<td>{{ point_particulier.quantite }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('transit_point_particulier_index') }}">back to list</a>
+
+	<a href="{{ path('transit_point_particulier_edit', {'id': point_particulier.id}) }}">edit</a>
+
+	{{ include('point_particulier/_delete_form.html.twig') }}
+{% endblock %}

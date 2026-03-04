@@ -1,0 +1,95 @@
+@use './starter-complet';
+
+// On rend le footer collant en bas de page
+html,
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+
+    .trst-bottom-0 {
+        bottom: -6px;
+    }
+
+    .trst-bottom-4 {
+        bottom: -4px;
+    }
+}
+
+footer.fr-footer {
+    margin-top: auto !important;
+}
+
+// CRÉATION D'UNE JAUGE DEVANT LES ENVOIS À LA PAGE D'ACCUEIL
+
+$green: #1abc9c;
+$yellow: #f1c40f;
+$red: #c0392b;
+
+.gauge-container {
+    height: 1.5rem;
+    border-radius: 3px;
+    background: linear-gradient(to right, #c0392b 0%, #f1c40f 50%, #1abc9c 100%);
+    overflow: hidden;
+    position: absolute;
+    top: 1px;
+    right: 0;
+    z-index: 0;
+    font-size: .75rem;
+    text-align: center;
+
+    .gauge {
+        height: 30px;
+        // width: 30%; <!-- la partie vide de la jauge
+        background-color: #eee;
+        position: absolute;
+        right: 0;
+        transition: all .3s ease-in-out;
+        z-index: -1;
+
+    }
+
+}
+
+ul.list-style-type-none li {
+    list-style-type: none;
+}
+
+// MATÉRIEL EN INSTANCE
+
+section.instance-ctnr {
+    margin: 0;
+    border: 1px solid var(--border-default-grey);
+    position: relative;
+
+    & h4 {
+        position: absolute;
+        top: -15px;
+        left: 1rem;
+        padding: 0 0.5rem;
+
+        & span,
+        & a {
+            background-color: var(--background-default-grey);
+        }
+
+        &+ul li {
+            list-style-type: circle;
+        }
+    }
+
+    & h5 {
+        font-weight: normal !important;
+    }
+}
