@@ -66,18 +66,26 @@ final class IndexController extends TransitController
         $all = $entityManager->getRepository(Envoi::class)->findBy(['archive' => true]);
         $envois = [];
         $receptions = [];
+        $MIs = []; // MI: Matériel en Instance
         foreach ($all as $envoi) {
             if ($envoi->getDirection()->getLibelle() === 'envoi') {
                 $envois[] = $envoi;
-            } else {
+            } else if ($envoi->getDirection()->getLibelle() === 'reception') {
                 $receptions[] = $envoi;
+                $points_particuliers = $envoi->getPointsParticuliers();
+                if (count($points_particuliers) > 0) {
+                    $MIs[] = $envoi;
+                }
+            } else {
+                $MIs[] = $envoi;
             }
         }
 
         return $this->render('index/archives.html.twig', [
             'user' => $user,
             'envois' => $envois,
-            'receptions' => $receptions
+            'receptions' => $receptions,
+            'MIs' => $MIs
         ]);
     }
 
@@ -119,6 +127,7 @@ final class IndexController extends TransitController
         $envoi->setDate(new \Datetime('now'));
         $envoi->setDirection($direction);
         $envoi->setStatut($statut_initial);
+        $envoi->setQuantite(1);
         $objet_en_instance = $entityManager->getRepository(Objet::class)->findOneBy(['libelle' => $this->objet_materiel_en_instance]);
 
         if ($envoi_ou_reception === 'en instance') {

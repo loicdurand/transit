@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Entity\Envoi;
+use App\Entity\StatutPointParticulier;
 
 #[Route('/point/particulier')]
 final class PointParticulierController extends AbstractController
@@ -30,6 +31,8 @@ final class PointParticulierController extends AbstractController
         $envoi = $entityManager->getRepository(Envoi::class)->find($envoi);
         $pointParticulier = new PointParticulier();
         $pointParticulier->setEnvoi($envoi);
+        if ($envoi->getDirection()->getLibelle() === 'en instance')
+            $pointParticulier->setStatut($entityManager->getRepository(StatutPointParticulier::class)->findOneBy(['libelle' => 'Article en instance']));
         $form = $this->createForm(PointParticulierType::class, $pointParticulier);
         $form->handleRequest($request);
 
