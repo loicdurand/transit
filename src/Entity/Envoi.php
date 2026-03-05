@@ -25,7 +25,7 @@ class Envoi
     #[ORM\Column(length: 50, unique: true)]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $reference = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

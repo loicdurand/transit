@@ -32,15 +32,17 @@
 		</li>
 	</ul>
 
-	<main class="fr-mt-4w">
+	<main class="page-accueil fr-mt-4w">
 
-		<h2>En cours</h2>
+		<h2 class="fr-mb-4w">Dossiers en cours</h2>
 
-		<h3 class="underline">Envoi:</h3>
+		{% set n = envois | length %}
+
+		<h3>Envoi{{n > 1 ? 's' :  '' }}</h3>
 
 		{% if envois | length %}
 
-			<ul>
+			<ul class="table-like fr-mb-6w">
 				{% for envoi in envois %}
 					<li class="fr-mb-2w relative fr-grid-row">
 						<div class="fr-col-9">
@@ -61,11 +63,13 @@
 
 		{% endif %}
 
-		<h3 class="underline">Réception:</h3>
+		{% set n = receptions | length %}
 
-		{% if receptions | length %}
+		<h3>Réception{{n > 1 ? 's' :  '' }}</h3>
 
-			<ul>
+		{% if n %}
+
+			<ul class="table-like fr-mb-6w">
 				{% for reception in receptions %}
 					<li class="fr-mb-2w relative fr-grid-row">
 						<div class="fr-col-9">
@@ -86,11 +90,14 @@
 
 		{% endif %}
 
-		<h3 class="underline fr-mb-5w">Matériel en instance:</h3>
+		{% set n = MIs | length %}
 
-		{% if MIs | length %}
+		<h3>Matériel{{n > 1 ? 's' :  '' }}
+			en instance</h3>
 
-			<ul>
+		{% if n %}
+
+			<ul class="table-like mi">
 				{% for mi in MIs %}
 					{% set pointsParticuliers = mi.pointsParticuliers | filter(point=> point.statut.libelle === 'Article en instance')%}
 					{% if pointsParticuliers | length %}
@@ -98,8 +105,8 @@
 							<section class="instance-ctnr w100 fr-p-4v fr-mb-4w">
 								<h4 class="fr-h6 relative inline-block w100">
 									<span class="fr-pl-1w fr-pr-1w">
-										{% set n = pointsParticuliers | length %}
-										Matériel{{ n > 1 ? 's' : '' }}
+										{% set nb = pointsParticuliers | length %}
+										Matériel{{ nb > 1 ? 's' : '' }}
 										{% if mi.titre starts with '__MI__' %}
 											en instance
 										{% else %}
@@ -125,9 +132,9 @@
 												</h5>
 											</div>
 											{# <div class="gauge-container fr-col-3" title="Avancement: {{ mi.percentage }}%">
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<div class="gauge" style="width: {{ 100 - mi.percentage }}%;"></div>
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											{{ mi.statut.libelle }}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										</div> #}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<div class="gauge" style="width: {{ 100 - mi.percentage }}%;"></div>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			{{ mi.statut.libelle }}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		</div> #}
 										</li>
 
 									{% endfor %}
