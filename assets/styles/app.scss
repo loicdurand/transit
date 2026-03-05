@@ -1,5 +1,9 @@
 @use './starter-complet';
 
+:root {
+    --brand-blue: #003366;
+}
+
 // On rend le footer collant en bas de page
 html,
 body {
@@ -29,6 +33,30 @@ main {
 
 footer.fr-footer {
     margin-top: auto !important;
+}
+
+.page-accueil h3 {
+    background: var(--brand-blue);
+    color: white;
+    padding: 8px 15px;
+    text-align: left;
+    border-radius: 4px 4px 0 0;
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-bottom: 0 !important;
+
+    &+ul.table-like {
+        margin-top: 0 !important;
+        border: 1px solid var(--border-default-grey);
+        padding-top: 1rem;
+        padding-right: 1rem;
+
+        &.mi {
+            border-style: dotted;
+            padding-top: 2rem;
+        }
+    }
 }
 
 // CRÉATION D'UNE JAUGE DEVANT LES ENVOIS À LA PAGE D'ACCUEIL
@@ -72,6 +100,7 @@ section.instance-ctnr {
     margin: 0;
     border: 1px solid var(--border-default-grey);
     position: relative;
+    background-color: #fafafa;
 
     & h4 {
         position: absolute;

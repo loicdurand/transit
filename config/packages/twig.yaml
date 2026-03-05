@@ -3,9 +3,9 @@ twig:
     form_themes: ['form/dsfr.html.twig']
     globals:
         app_env: '%env(APP_ENV)%'
-        app_name: 'Au bon transit...' 
-        app_tagline: 'COMGENDGP'
-        app_slug: 'Gestion logistique'
+        app_name: Au bon transit...
+        app_tagline: COMGENDGP
+        app_slug: Application d'aide au suivi logistique
 
 when@test:
     twig:

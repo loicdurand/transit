@@ -110,7 +110,6 @@ final class EnvoiController extends TransitController
         ]);
     }
 
-
     #[Route('/envoi/sauver-donnee', name: 'transit_envoi_sauverdonnee', methods: ['POST'])]
     public function sauverdonnee(EntityManagerInterface $entityManager)
     {
@@ -139,8 +138,7 @@ final class EnvoiController extends TransitController
         $entityManager->flush();
 
         return $this->json([
-            'success' => true,
-            'data' => $envoi
+            'success' => true
         ]);
     }
 
