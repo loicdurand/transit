@@ -1,4 +1,4 @@
-# Au bon transit | Application d'aide au suivi logistique SOLC
+# Au bon transit | Application d'aide au suivi logistique SOLC | v0.0.2
 
 ## Description
 Une application web sécurisée et intuitive pour suivre les livraisons à destination ou en partance des SOLC. Elle permet aux utilisateurs de ces unités de créer et gérer des envois ou des réception de colis ou palettes, ainsi que le matériel en instance. 
