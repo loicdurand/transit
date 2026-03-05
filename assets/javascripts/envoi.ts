@@ -77,16 +77,31 @@ export default function () {
 
         // Envoi des saisies dans le formulaire (référence, type d'envoi et quantité) dès qu'un changement survient
         ['reference', 'type', 'quantite'].forEach(field => {
-            const target = document.getElementById(`envoi_completion_${field}`) as HTMLInputElement;
-            target?.addEventListener('input', (event) => {
-                const value = target.value;
-                axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value });
-                // .then((response) => {
-                //     const { success, data } = response.data;
-                //     if (success)
-                //         location.reload();
-                // });
-            })
+            const //
+
+                target = document.getElementById(`envoi_completion_${field}`) as HTMLInputElement,
+
+                debounce = (func: VoidFunction, delay = 450) => {
+                    let timeoutId: any;
+                    return function (this: any, ...args: any[]) {
+                        clearTimeout(timeoutId);
+                        timeoutId = setTimeout(() => {
+                            func.apply(this, args as []);
+                        }, delay);
+                    };
+                },
+
+                debounceReferencePrincipale = debounce(async () => {
+                    const value = target.value;
+                    axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value });
+                }),
+
+                event = field == 'reference' ? debounceReferencePrincipale : () => {
+                    const value = target.value;
+                    axios.post(`/${prefix}/envoi/sauver-donnee`, { envoi_id, field, value });
+                };
+
+            target?.addEventListener('input', event)
         })
 
         manage_taches_cliquables();

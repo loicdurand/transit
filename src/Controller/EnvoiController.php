@@ -139,8 +139,7 @@ final class EnvoiController extends TransitController
         $entityManager->flush();
 
         return $this->json([
-            'success' => true,
-            'data' => $envoi
+            'success' => true
         ]);
     }
 
