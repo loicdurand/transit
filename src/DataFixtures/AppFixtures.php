@@ -184,8 +184,10 @@ class AppFixtures extends Fixture
                 ]
             ],
             $en_instance->getId() => [
-                'Matériel reçu?',
-                'En attente réception'
+                [
+                    'Matériel reçu?',
+                    'En attente réception'
+                ]
             ]
         ];
 
