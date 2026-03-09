@@ -65,7 +65,7 @@ class AppFixtures extends Fixture
             'reception' => null,
             'en instance' => null
         ];
-        foreach (['envoi', 'reception'] as $libelle) {
+        foreach (['envoi', 'reception', 'en instance'] as $libelle) {
             $direction = new DirectionEnvoi();
             $direction->setLibelle($libelle);
             $manager->persist($direction);

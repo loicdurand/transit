@@ -3,7 +3,7 @@
 ## Description
 Une application web sécurisée et intuitive pour suivre les livraisons à destination ou en partance des SOLC. Elle permet aux utilisateurs de ces unités de créer et gérer des envois ou des réception de colis ou palettes, ainsi que le matériel en instance. 
 
-Cette application a été pensée pour les seules unités SOLCde la Gendarmerie Naionale et n'a pas vocation à être adaptée aux besoins d'autres unités ou administrations tant elle répond à un besoin très spécifique.
+Cette application a été pensée pour les seules unités SOLC de la Gendarmerie Nationale et n'a pas vocation à être adaptée aux besoins d'autres unités ou administrations tant elle répond à un besoin très spécifique.
 
 ![image](./assets/images/01-accueil.png)
 
