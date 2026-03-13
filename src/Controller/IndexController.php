@@ -16,6 +16,7 @@ use App\Entity\StatutEnvoi;
 use App\Entity\DirectionEnvoi;
 use App\Entity\Etape;
 use App\Entity\Fichier;
+use App\Entity\Transport;
 use App\Form\EnvoiType;
 use App\Form\DestinataireType;
 use App\Form\ObjetType;
@@ -123,11 +124,14 @@ final class IndexController extends TransitController
 
         $direction = $entityManager->getRepository(DirectionEnvoi::class)->findOneBy(['libelle' => $envoi_ou_reception]);
         $statut_initial = $entityManager->getRepository(StatutEnvoi::class)->findOneBy(['libelle' => $this->statut_initial_libelle]);
+        $transport_sans_objet = $entityManager->getRepository(Transport::class)->findOneBy(['abbreviation' => 'SO']);
+
         $envoi = new Envoi();
         $envoi->setDate(new \Datetime('now'));
         $envoi->setDirection($direction);
         $envoi->setStatut($statut_initial);
         $envoi->setQuantite(1);
+        $envoi->setTransport($transport_sans_objet);
         $objet_en_instance = $entityManager->getRepository(Objet::class)->findOneBy(['libelle' => $this->objet_materiel_en_instance]);
 
         if ($envoi_ou_reception === 'en instance') {
@@ -138,7 +142,7 @@ final class IndexController extends TransitController
         $form = $this->createForm(EnvoiType::class, $envoi);
 
         $form->handleRequest($this->request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
             if ($envoi_ou_reception === 'en instance')
                 $envoi->setObjet($objet_en_instance);

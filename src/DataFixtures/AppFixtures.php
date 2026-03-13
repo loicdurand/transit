@@ -13,6 +13,7 @@ use App\Entity\Action;
 use App\Entity\Destinataire;
 use App\Entity\Objet;
 use App\Entity\StatutPointParticulier;
+use App\Entity\Transport;
 
 class AppFixtures extends Fixture
 {
@@ -71,6 +72,20 @@ class AppFixtures extends Fixture
             $manager->persist($direction);
             $manager->flush();
             $directions[$libelle] = $direction;
+        }
+
+        // INSERTION DES TRANSPORTS (avion, voie maritime)
+        $transports = [
+            ['Non précisé', 'NP'],
+            ['avion', 'VA'],
+            ['Voie Maritime', 'VM']
+        ];
+        foreach ($transports as [$libelle, $abbr]) {
+            $transport = new Transport();
+            $transport->setLibelle($libelle);
+            $transport->setAbbreviation($abbr);
+            $manager->persist($transport);
+            $manager->flush();
         }
 
         // INSERTION DES OBJETS (Envoi MCO, Barge SXM, ETC...)

@@ -36,6 +36,7 @@ class PointParticulierType extends AbstractType
                 'choice_label' => 'MCA',
             ])
             ->add('quantite', null, [
+                'label' => 'Quantité',
                 'attr' => [
                     'min' => 1
                 ]

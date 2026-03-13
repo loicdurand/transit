@@ -85,6 +85,9 @@ class Envoi
     #[ORM\OneToMany(targetEntity: PointParticulier::class, mappedBy: 'envoi', orphanRemoval: true)]
     private Collection $points_particuliers;
 
+    #[ORM\ManyToOne]
+    private ?Transport $transport = null;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -370,6 +373,18 @@ class Envoi
                 $pointsParticulier->setEnvoi(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTransport(): ?Transport
+    {
+        return $this->transport;
+    }
+
+    public function setTransport(?Transport $transport): static
+    {
+        $this->transport = $transport;
 
         return $this;
     }

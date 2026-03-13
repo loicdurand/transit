@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('transit_envoi_delete', {'id': envoi.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet {{ envoi.direction.libelle }}');">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ envoi.id) }}">
+	<button id="envoi-delete-btn" class="fr-btn fr-btn--secondary fr-mt-2w" type="submit">Supprimer</button>
+</form>

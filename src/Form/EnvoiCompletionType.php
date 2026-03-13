@@ -7,6 +7,7 @@ use App\Entity\Envoi;
 use App\Entity\Objet;
 use App\Entity\StatutEnvoi;
 use App\Entity\TypeEnvoi;
+use App\Entity\Transport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +29,7 @@ class EnvoiCompletionType extends AbstractType
             ])
             // ->add('date')
             ->add('type', EntityType::class, [
-                'label' => 'Type d\'envoi',
+                'label' => 'Palette / Colis ?',
                 'class' => TypeEnvoi::class,
                 'choice_label' => 'libelle',
             ])
@@ -37,7 +38,7 @@ class EnvoiCompletionType extends AbstractType
                 'html5' => true,
                 'attr' => [
                     'min' => 1,
-                    'max' => 5
+                    // 'max' => 5
                 ]
             ])
             // ->add('destinataire', EntityType::class, [
@@ -54,6 +55,13 @@ class EnvoiCompletionType extends AbstractType
             //     'choice_label' => 'libelle',
             // ])
         ;
+        if ($envoi->getDirection()->getLibelle() === 'reception') {
+            $builder->add('transport', EntityType::class, [
+                'label' => 'Comment? ',
+                'class' => Transport::class,
+                'choice_label' => 'libelle',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -225,5 +226,16 @@ final class EnvoiController extends TransitController
         $entityManager->persist($envoi);
         $entityManager->flush();
         return $this->json(['success' => true, 'filename' => $newFilename]);
+    }
+
+    #[Route('/envoi/{id}', name: 'transit_envoi_delete', methods: ['POST'])]
+    public function delete(Request $request, Envoi $envoi, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $envoi->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($envoi);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('transit_index', [], Response::HTTP_SEE_OTHER);
     }
 }
